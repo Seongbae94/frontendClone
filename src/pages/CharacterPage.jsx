@@ -40,7 +40,7 @@ const CharacterPage = () => {
           <p className="text-font">나는 갈기 없는 숫사자 컴플렉야 (어쩔) </p>
         </div>
       </StHeader>
-      <div style={{ height: "1px", border: "1px solid #dedfe0" }}></div>
+      <div style={{ height: "1px", backgroundColor: "#dedfe0" }}></div>
 
       <StGridBox>
         <StProduct>

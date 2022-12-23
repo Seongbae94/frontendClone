@@ -11,6 +11,9 @@ import HomePage from "./pages/Home";
 import CharacterPage from "./pages/CharacterPage";
 import ProductsPage from "./pages/ProductsPage";
 
+import OrderHistory from "./pages/OrderHistory";
+import MyPageLayout from "./components/layout/MyPageLayout";
+import Orderbasket from "./pages/Orderbasket";
 function App() {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -35,7 +38,24 @@ function App() {
         <Route path="/best" element={<BestPage />} />
         <Route path="/profile" element={<CharacterPage />} />
         <Route path="/products" element={<ProductsPage />} />
-
+        <Route
+          path="/mypage/orderlist"
+          element={
+            <div>
+              <MyPageLayout />
+              <OrderHistory />
+            </div>
+          }
+        />
+        <Route
+          path="/mypage/basket"
+          element={
+            <div>
+              <MyPageLayout />
+              <Orderbasket />
+            </div>
+          }
+        />
         <Route path="/*" element={<HomePage />} />
       </Routes>
     </Layout>
