@@ -1,7 +1,13 @@
+import { useNavigate } from "react-router";
 import styled from "styled-components";
 import CaractorCategory from "../components/category/Category";
 
 const HomePage = () => {
+  const navigate = useNavigate();
+
+  const gotoProducts = () => {
+    navigate("/products");
+  };
   return (
     <main>
       <SliderWrap>
@@ -20,7 +26,7 @@ const HomePage = () => {
       <NewItemWrap>
         <div className="title">새로 나왔어요</div>
         <ul>
-          <li>
+          <li onClick={gotoProducts}>
             <div className="listImg"></div>
             <div className="goodsName">드레스업인형_춘식이</div>
             <div className="price">
@@ -33,7 +39,7 @@ const HomePage = () => {
             <div className="price">
               <strong>19,000</strong>원
             </div>
-          </li>{" "}
+          </li>
           <li>
             <div className="listImg"></div>
             <div className="goodsName">드레스업인형_춘식이</div>

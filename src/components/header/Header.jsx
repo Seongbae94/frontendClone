@@ -56,6 +56,18 @@ const Header = () => {
   const [subActive, setSubActive] = useState(true);
   const navigate = useNavigate();
 
+  const nowRoute = useSelector((state) => state.routes.route.pathname);
+
+  useEffect(() => {
+    if (nowRoute) {
+      if (nowRoute.includes("/products")) {
+        setSubActive(false);
+      } else {
+        setSubActive(true);
+      }
+    }
+  }, [nowRoute]);
+
   const gotoMain = () => {
     navigate("/home");
   };
