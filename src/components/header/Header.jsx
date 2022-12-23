@@ -29,18 +29,19 @@ const Nav = ({ title }) => {
 
   useEffect(() => {
     setActiveNav("");
-
-    if (nowRoute === "/home" && title === "홈") {
-      setActiveNav("Active");
-    }
-    if (nowRoute === "/best" && title === "베스트") {
-      setActiveNav("Active");
-    }
-    if (nowRoute === "/profile" && title === "캐릭터관") {
-      setActiveNav("Active");
-    }
-    if (nowRoute.includes("/mypage") && title === "마이") {
-      setActiveNav("Active");
+    if (nowRoute) {
+      if (nowRoute === "/home" && title === "홈") {
+        setActiveNav("Active");
+      }
+      if (nowRoute === "/best" && title === "베스트") {
+        setActiveNav("Active");
+      }
+      if (nowRoute === "/profile" && title === "캐릭터관") {
+        setActiveNav("Active");
+      }
+      if (nowRoute.includes("/mypage") && title === "마이") {
+        setActiveNav("Active");
+      }
     }
   }, [nowRoute]);
 
