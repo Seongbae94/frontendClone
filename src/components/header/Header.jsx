@@ -1,29 +1,43 @@
 import { useState } from "react";
 import styled from "styled-components";
 
+const Nav = ({ title }) => {
+  return <li className="Active">{title}</li>;
+};
+
 const Header = () => {
   const [subActive, setSubActive] = useState(true);
 
   return (
-    <Wrap>
-      <Main>
-        <div className="ico_set basket"></div>
-        <div className="mainLogo"></div>
-        <div className="Login">로그인</div>
-      </Main>
-      <Sub subActive={subActive}>
-        <ul>
-          <li className="Active">홈</li>
-          <li>베스트</li>
-          <li>캐릭터관</li>
-          <li>마이</li>
-        </ul>
-      </Sub>
-    </Wrap>
+    <>
+      <Wrap>
+        <Main>
+          <div className="ico_set basket"></div>
+          <div className="mainLogo"></div>
+          <div className="Login">로그인</div>
+        </Main>
+        <Sub subActive={subActive}>
+          <ul>
+            <Nav title="홈" />
+            <Nav title="베스트" />
+            <Nav title="캐릭터관" />
+            <Nav title="마이" />
+          </ul>
+        </Sub>
+      </Wrap>
+    </>
   );
 };
 const Wrap = styled.div`
   border-bottom: 1px solid #e3e5e8;
+  background-color: white;
+  position: fixed;
+  width: 640px;
+  min-width: 320px;
+  left: 50%;
+  top: 0;
+  z-index: 1000;
+  transform: translateX(-50%);
 `;
 const Main = styled.div`
   width: 100%;
@@ -50,6 +64,7 @@ const Main = styled.div`
     background-image: Url("https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/assets/images/m960/logo_christmas_2st.gif");
     background-size: cover;
     background-position: center;
+    cursor: pointer;
   }
   .Login {
     cursor: pointer;
