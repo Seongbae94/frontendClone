@@ -1,7 +1,13 @@
 import styled from "styled-components";
+import Header from "../header/Header";
 
 const Layout = ({ children }) => {
-  return <LayoutStyled>{children}</LayoutStyled>;
+  return (
+    <LayoutStyled>
+      <Header />
+      {children}
+    </LayoutStyled>
+  );
 };
 
 const LayoutStyled = styled.div`
