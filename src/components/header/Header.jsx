@@ -1,19 +1,73 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 import styled from "styled-components";
 
 const Nav = ({ title }) => {
-  return <li className="Active">{title}</li>;
+  const navigate = useNavigate();
+
+  const gotoPage = () => {
+    switch (title) {
+      case "홈":
+        navigate("/home");
+        break;
+      case "베스트":
+        navigate("/best");
+        break;
+      case "캐릭터관":
+        navigate("/profile");
+        break;
+      case "마이":
+        navigate("/mypage/basket");
+        break;
+    }
+  };
+
+  const nowRoute = useSelector((state) => state.routes.route.pathname);
+
+  const [activeNav, setActiveNav] = useState("");
+
+  useEffect(() => {
+    setActiveNav("");
+
+    if (nowRoute === "/home" && title === "홈") {
+      setActiveNav("Active");
+    }
+    if (nowRoute === "/best" && title === "베스트") {
+      setActiveNav("Active");
+    }
+    if (nowRoute === "/profile" && title === "캐릭터관") {
+      setActiveNav("Active");
+    }
+    if (nowRoute.includes("/mypage") && title === "마이") {
+      setActiveNav("Active");
+    }
+  }, [nowRoute]);
+
+  return (
+    <li className={activeNav} onClick={gotoPage}>
+      {title}
+    </li>
+  );
 };
 
 const Header = () => {
   const [subActive, setSubActive] = useState(true);
+  const navigate = useNavigate();
+
+  const gotoMain = () => {
+    navigate("/home");
+  };
+  const gotoBasket = () => {
+    navigate("/mypage/basket");
+  };
 
   return (
     <>
       <Wrap>
         <Main>
-          <div className="ico_set basket"></div>
-          <div className="mainLogo"></div>
+          <div className="ico_set basket" onClick={gotoBasket}></div>
+          <div className="mainLogo" onClick={gotoMain}></div>
           <div className="Login">로그인</div>
         </Main>
         <Sub subActive={subActive}>

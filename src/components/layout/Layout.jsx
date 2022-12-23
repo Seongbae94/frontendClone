@@ -15,7 +15,7 @@ const Layout = ({ children }) => {
 const LayoutStyled = styled.div`
   max-width: 640px;
   min-width: 320px;
-  margin: 0 auto;
+  margin: 87px auto 0;
 `;
 
 export default Layout;

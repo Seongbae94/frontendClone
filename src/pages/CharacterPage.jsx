@@ -1,49 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import CaractorCategory from "../components/category/Category";
 import Modal from "../components/modal/Modal";
 
 const CharacterPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <StContainer>
-      <StCategory>
-        <img
-          style={{ cursor: "pointer", height: "55px" }}
-          src={require("../amu.png")}
-        />
-        <img
-          style={{ cursor: "pointer", height: "55px" }}
-          src={require("../amu.png")}
-        />
-        <img
-          style={{ cursor: "pointer", height: "55px" }}
-          src={require("../amu.png")}
-        />
-        <img
-          style={{ cursor: "pointer", height: "55px" }}
-          src={require("../amu.png")}
-        />
-        <img
-          style={{ cursor: "pointer", height: "55px" }}
-          src={require("../amu.png")}
-        />
-        <img
-          style={{ cursor: "pointer", height: "55px" }}
-          src={require("../amu.png")}
-        />
-        <img
-          style={{ cursor: "pointer", height: "55px" }}
-          src={require("../amu.png")}
-        />
-        <img
-          style={{ cursor: "pointer", height: "55px" }}
-          src={require("../amu.png")}
-        />
-        <img
-          style={{ cursor: "pointer", height: "55px" }}
-          src={require("../amu.png")}
-        />
-      </StCategory>
+      <CaractorCategory />
       <StHeader>
         <div className="mainImg">
           <div className="imgContainer">
