@@ -9,6 +9,7 @@ import { getRoutes } from "./redux/modules/routeSlice";
 import BestPage from "./pages/BestPage";
 import HomePage from "./pages/Home";
 import CharacterPage from "./pages/CharacterPage";
+import ProductsPage from "./pages/ProductsPage";
 
 function App() {
   const location = useLocation();
@@ -30,9 +31,12 @@ function App() {
   return (
     <Layout>
       <Routes>
-        <Route path="/home" element={<HomePage />}></Route>
-        <Route path="/best" element={<BestPage />}></Route>
-        <Route path="/profile" element={<CharacterPage />}></Route>
+        <Route exact path="/home" element={<HomePage />} />
+        <Route path="/best" element={<BestPage />} />
+        <Route path="/profile" element={<CharacterPage />} />
+        <Route path="/products" element={<ProductsPage />} />
+
+        <Route path="/*" element={<HomePage />} />
       </Routes>
     </Layout>
   );
