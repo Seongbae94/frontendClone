@@ -15,7 +15,7 @@ const CharacterPage = () => {
             <img onClick={() => setIsOpen(true)} className="spreadImg" />
             <Modal onClose={() => setIsOpen(false)} open={isOpen}>
               <StModalStyle>
-                <img className="CharImg" />
+                <img src={require("../amu.png")} className="CharImg" />
                 <img
                   className="modal-close"
                   src="https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/ico_close.png"
@@ -90,18 +90,6 @@ const CharacterPage = () => {
 
 export default CharacterPage;
 
-const BUTTON_WRAPPER_STYLE = {
-  position: "relative",
-  zIndex: 1,
-};
-
-const OTHER_CONTENT_STYLES = {
-  position: "relative",
-  zIndex: 2,
-  backgroundColor: "red",
-  padding: "10px",
-};
-
 const StModalStyle = styled.div`
   width: 280px;
   height: 363px;
@@ -128,8 +116,13 @@ const StModalStyle = styled.div`
   }
 
   .CharImg {
+    width: 210px;
+    height: 210px;
     position: absolute;
-    /* transform: "translate(-50%, -50%)"; */
+
+    top: 0;
+
+    transform: translate(0, -70%);
   }
 
   .modal-close {
