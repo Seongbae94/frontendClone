@@ -1,70 +1,58 @@
-# Getting Started with Create React App
+### rule
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+style-components 사용
+className => camelCase
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+### trouble shooting
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 해야할 것 정리
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+#### 페이지
 
-### `npm test`
+메인 페이지
+베스트 상품 페이지
+캐릭터관 페이지
+마이페이지
+상품 상세페이지
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### 기능
 
-### `npm run build`
+##### 공통
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+[]소셜 로그인
+[]헤더, 푸터 작업
+[]헤더 메인, 서브 구분
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+##### 메인페이지
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+[]메인 페이지 슬라이드 (기본 : 오토, 시간 남으면 버튼까지)
+[]캐릭터 카테고리(컴포넌트화까지)
+[]"새로 나왔어요"
+[]영상 이벤트 리스트
+[]시간 남으면 귀여움 숏클립
 
-### `npm run eject`
+##### 베스트 상품 페이지
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+[]인기 순 정리
+[]1 ~ 3위 튀게 처리
+[]상품 리스트에서 장바구니 아이콘 클릭 시 장바구니에 상품 추가
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+##### 캐릭터관 페이지
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+[]컴포넌트화 된 캐릭터 카테고리 상단에 삽입
+[]"..." 버튼 클릭 시 모달창 생성. X버튼 클릭 시 해제 (시간 남으면 배경 지울 때도 삭제)
+[]상품 리스트에서 장바구니 아이콘 클릭 시 장바구니에 상품 추가
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+##### 마이페이지
 
-## Learn More
+- 장바구니
+  []버튼에 따라 수량 조절
+  []체크 버튼에 따라 구매 가격 조정
+  []시간 남으면 무료배송 애니메이션 바 추가
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- 주문 내역
+  []주문 날짜 별로 정리
