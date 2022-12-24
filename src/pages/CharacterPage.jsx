@@ -231,7 +231,7 @@ const StProduct = styled.div`
   }
 
   .price {
-    margin: 0;
+    margin: 10px 0 0 0;
     font-weight: bold;
   }
 
