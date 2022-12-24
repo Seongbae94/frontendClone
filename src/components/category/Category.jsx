@@ -46,9 +46,8 @@ const CaractorCategory = () => {
 };
 
 const CharectorCategory = styled.div`
-  width: 100%;
   height: 74px;
-  margin: 20px 0;
+  margin: 20px auto;
   ul {
     display: flex;
     gap: 14px;

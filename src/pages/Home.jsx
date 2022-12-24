@@ -40,11 +40,15 @@ const HomePage = () => {
       desc: "지치고 힘들 때 인센스 스틱으로\n평화를 되찾아보세요.",
     },
   ];
-  const fakeSlideList = [
-    sliderList[sliderList.length - 1],
-    ...sliderList,
-    sliderList[0],
-  ];
+  const firstList = {
+    ...sliderList[0],
+    id: 0,
+  };
+  const lastList = {
+    ...sliderList[sliderList.length - 1],
+    id: sliderList.length + 1,
+  };
+  const fakeSlideList = [lastList, ...sliderList, firstList];
   // -------------------------------------------------------
   const slideMoveWidth = 640;
   const slideTime = 5000;
@@ -63,7 +67,7 @@ const HomePage = () => {
     setCorrentIdx(2);
     setMoveX(640);
     setTimeout(() => {
-      setrtansition("all 0.5s");
+      setrtansition(`all ${slideAnimationTime / 1000}s`);
     }, slideAnimationTime);
   };
 
@@ -89,6 +93,75 @@ const HomePage = () => {
       clearInterval(loop);
     };
   }, [slideIdx, moveX]);
+  // ----------------------------------------------------------
+  const goodsList = [
+    {
+      id: 1,
+      image:
+        "https://img1.kakaocdn.net/thumb/R125x125@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221013181207775_8809814928324_AW_00.jpg",
+    },
+    {
+      id: 2,
+      image:
+        "https://img1.kakaocdn.net/thumb/R125x125@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221013181207775_8809814928324_AW_00.jpg",
+    },
+    {
+      id: 3,
+      image:
+        "https://img1.kakaocdn.net/thumb/R125x125@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221013181207775_8809814928324_AW_00.jpg",
+    },
+    {
+      id: 4,
+      image:
+        "https://img1.kakaocdn.net/thumb/R125x125@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221013181207775_8809814928324_AW_00.jpg",
+    },
+    {
+      id: 5,
+      image:
+        "https://img1.kakaocdn.net/thumb/R125x125@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221013181207775_8809814928324_AW_00.jpg",
+    },
+    {
+      id: 6,
+      image:
+        "https://img1.kakaocdn.net/thumb/R125x125@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221013181207775_8809814928324_AW_00.jpg",
+    },
+    {
+      id: 10,
+      image:
+        "https://img1.kakaocdn.net/thumb/R125x125@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221013181207775_8809814928324_AW_00.jpg",
+    },
+  ];
+  const TotalGoodsPage = 3;
+  const moveLength = 170;
+  const [nowGoodsPage, setNowGoodsPage] = useState(1);
+  const [goodsMoveX, setGoodsMoveX] = useState(0);
+
+  const [goodsLeftBtn, setGoodsLeftBtn] = useState("controlBtn left");
+  const [goodsRightBtn, setGoodsRightBtn] = useState("controlBtn right Active");
+
+  const rightMove = () => {
+    if (nowGoodsPage < 3) {
+      setNowGoodsPage(nowGoodsPage + 1);
+    }
+  };
+  const leftMove = () => {
+    if (nowGoodsPage > 1) {
+      setNowGoodsPage(nowGoodsPage - 1);
+    }
+  };
+  useEffect(() => {
+    setGoodsMoveX(moveLength * (nowGoodsPage - 1));
+
+    setGoodsLeftBtn("controlBtn left Active");
+    setGoodsRightBtn("controlBtn right Active");
+
+    if (nowGoodsPage === 1) {
+      setGoodsLeftBtn("controlBtn left");
+    }
+    if (nowGoodsPage === 3) {
+      setGoodsRightBtn("controlBtn right");
+    }
+  }, [nowGoodsPage]);
 
   return (
     <main>
@@ -111,7 +184,35 @@ const HomePage = () => {
           {slideIdx}/{sliderList.length}
         </div>
       </SliderWrap>
-      <CaractorCategory />
+      <CaractorGoodsWrap goodsMoveX={goodsMoveX} length={goodsList.length}>
+        <div className="title">내가 좋아하는 캐릭터</div>
+        <CaractorCategory />
+        <div className="listScreen">
+          <div className="goodsLists">
+            {goodsList.map((list) => (
+              <div key={list.id} className="goodsList">
+                <div
+                  className="goodsImg"
+                  style={{ backgroundImage: `Url(${list.image})` }}
+                ></div>
+                <div className="goodsContent">
+                  <div>2023 탁상용 캘린더</div>
+                  <div>
+                    <strong>6,000</strong>원
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="controlWrap">
+          <div className={goodsLeftBtn} onClick={leftMove}></div>
+          <span className="goodsPage">
+            {nowGoodsPage}/{TotalGoodsPage}
+          </span>
+          <div className={goodsRightBtn} onClick={rightMove}></div>
+        </div>
+      </CaractorGoodsWrap>
       <NewItemWrap>
         <div className="title">새로 나왔어요</div>
         <ul>
@@ -271,6 +372,88 @@ const SlideList = styled.li`
     white-space: pre;
   }
 `;
+const CaractorGoodsWrap = styled.div`
+  margin-top: 30px;
+  .title {
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: bold;
+    padding: 0 20px 16px;
+  }
+  .listScreen {
+    padding-left: 20px;
+    height: 193px;
+    overflow: hidden;
+  }
+  .goodsLists {
+    width: ${({ length }) => length * 135}px;
+    height: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 10px;
+    list-style: none;
+    padding-left: 5px;
+    margin: 0;
+    transform: ${({ goodsMoveX }) => `translateX(-${goodsMoveX}px)`};
+    transition: all 0.5s;
+  }
+  .goodsList {
+    width: 125px;
+    height: 172px;
+    cursor: pointer;
+  }
+  .goodsImg {
+    width: 100%;
+    height: 125px;
+    background-size: contain;
+    background-position: center;
+  }
+  .goodsContent {
+    padding-top: 10px;
+    color: #616161;
+    font-size: 14px;
+    line-height: 17px;
+  }
+  .goodsContent div {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    word-break: break-all;
+  }
+  .goodsContent div strong {
+    color: #222;
+  }
+  .controlWrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 0;
+  }
+  .goodsPage {
+    padding: 0 20px;
+  }
+  .controlBtn {
+    width: 24px;
+    height: 24px;
+    background-size: 700px 1000px;
+    background-image: url("https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/ico_friends.png");
+  }
+  .controlBtn.left {
+    background-position: -430px -760px;
+  }
+  .controlBtn.left.Active {
+    background-position: -430px -730px;
+    cursor: pointer;
+  }
+  .controlBtn.right {
+    background-position: -460px -760px;
+  }
+  .controlBtn.right.Active {
+    background-position: -460px -730px;
+    cursor: pointer;
+  }
+`;
 
 const NewItemWrap = styled.div`
   padding: 30px 15px 0;
@@ -360,6 +543,7 @@ const ExhibitionWrap = styled.div`
     border-radius: 10px;
     background-color: white;
     overflow: hidden;
+    cursor: pointer;
   }
   .listImg {
     width: 100%;
