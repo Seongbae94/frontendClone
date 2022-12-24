@@ -53,8 +53,10 @@ export const basketSlice = createSlice({
 
     addAllSum: (state) => {
       const totalPrices = state.dummyInfo.map(
-        (dummy) => state.totalPrice + dummy.num * dummy.price
+        (dummy) => dummy.num * dummy.price
       );
+
+      console.log(totalPrices);
 
       return {
         ...state,
@@ -105,6 +107,40 @@ export const basketSlice = createSlice({
     },
 
     toggleCheck: (state) => (state = { ...state, toggle: !state.toggle }),
+    toggleEach: (state, action) => {
+      return {
+        ...state,
+        dummyInfo: state.dummyInfo.map((dummy) =>
+          dummy.id === action.payload
+            ? { ...dummy, toggle: !dummy.toggle }
+            : { ...dummy }
+        ),
+      };
+    },
+    autoToggleAll: (state) => {
+      const toggleAll = state.dummyInfo.filter(
+        (dummy) => dummy.toggle === true
+      );
+      return {
+        ...state,
+        toggle: toggleAll.length === state.dummyInfo.length ? true : false,
+      };
+    },
+    autoToggleAllTrue: (state) => {
+      return {
+        ...state,
+        dummyInfo: state.dummyInfo.map((dummy) => ({ ...dummy, toggle: true })),
+      };
+    },
+    autoToggleAllFalse: (state) => {
+      return {
+        ...state,
+        dummyInfo: state.dummyInfo.map((dummy) => ({
+          ...dummy,
+          toggle: false,
+        })),
+      };
+    },
 
     initUpdateStatus: (state) => {
       state.updateSuccess = false;
@@ -122,7 +158,7 @@ export const basketSlice = createSlice({
     // [__getComments.pending]: (state, action) => {
     //   state.isLoading = true;
     // },
-    // [__getComments.fulfilled]: (state, action) => {
+    // [SumPrice__getComments.fulfilled]: (state, action) => {
     //   state.isLoading = false;
     //   state.comments = action.payload;
     // },
@@ -144,6 +180,10 @@ export const {
   subEachCheckedTotal,
   addAllSum,
   subAllSum,
+  autoToggleAll,
+  toggleEach,
+  autoToggleAllTrue,
+  autoToggleAllFalse,
 } = basketSlice.actions;
 
 export default basketSlice;

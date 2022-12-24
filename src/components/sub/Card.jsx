@@ -7,6 +7,8 @@ import {
   subPriceByCount,
   addEachCheckedTotal,
   subEachCheckedTotal,
+  autoToggleAll,
+  toggleEach,
 } from "../../redux/modules/basketSlice";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -14,6 +16,7 @@ const Card = ({ toggle, setTotalPrice, id }) => {
   const [clicked, setClicked] = useState(false);
   const dispatch = useDispatch();
   const baskets = useSelector((store) => store.basket.dummyInfo);
+
   const basket = baskets.find((basket) => basket.id === id);
   const totalPrice = useSelector((store) => store.basket.totalPrice);
 
@@ -26,13 +29,19 @@ const Card = ({ toggle, setTotalPrice, id }) => {
     setClicked(toggle);
   }, [toggle]);
 
+  useEffect(() => {
+    dispatch(autoToggleAll());
+  }, [basket.toggle]);
+
   const noChecked = () => {
-    setClicked((prev) => !prev);
+    // setClicked((prev) => !prev);
+    dispatch(toggleEach(id));
     dispatch(subEachCheckedTotal(id));
   };
 
   const Checked = () => {
-    setClicked((prev) => !prev);
+    // setClicked((prev) => !prev);
+    dispatch(toggleEach(id));
     dispatch(addEachCheckedTotal(id));
   };
 
@@ -63,7 +72,7 @@ const Card = ({ toggle, setTotalPrice, id }) => {
           }}
         ></StCloseIcon>
 
-        {clicked ? (
+        {basket.toggle ? (
           <StCheckIcon onClick={noChecked}></StCheckIcon>
         ) : (
           <StCheckIcon
@@ -86,7 +95,7 @@ const Card = ({ toggle, setTotalPrice, id }) => {
           </h3>
 
           {/* <div style={{ display: "flex", alignItems: "center" }}> */}
-          {clicked ? (
+          {basket.toggle ? (
             <div style={{ display: "flex", alignItems: "center" }}>
               <StCheckIcon
                 onClick={() => subCountWithSum()}
