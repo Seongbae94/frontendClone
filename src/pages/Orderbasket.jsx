@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import Card from "../components/utils/Card";
+import Card from "../components/sub/Card";
 import {
   toggleCheck,
   addAllSum,
   subAllSum,
+  autoToggle,
+  autoToggleAllTrue,
+  autoToggleAllFalse,
 } from "../redux/modules/basketSlice";
 
 const Orderbasket = () => {
@@ -14,11 +17,9 @@ const Orderbasket = () => {
   const dispatch = useDispatch();
   const data = useSelector((store) => store.basket.dummyInfo);
   const toggle = useSelector((store) => store.basket.toggle);
-  // const price = useSelector((store) => store.basket.totalPrice);
-  // console.log(price);
 
   const baskets = useSelector((store) => store.basket.dummyInfo);
-  console.log(baskets);
+  // console.log(baskets);
 
   function tagAdd() {
     let progress = document.querySelector(".progressTag");
@@ -63,11 +64,14 @@ const Orderbasket = () => {
   const Clicked = () => {
     dispatch(toggleCheck());
     dispatch(subAllSum());
+    // dispatch(autoToggle());
+    dispatch(autoToggleAllFalse());
   };
 
   const noClicked = () => {
     dispatch(toggleCheck());
     dispatch(addAllSum());
+    dispatch(autoToggleAllTrue());
   };
 
   return (
