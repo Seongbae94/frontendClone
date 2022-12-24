@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import CaractorCategory from "../components/category/Category";
@@ -8,19 +9,107 @@ const HomePage = () => {
   const gotoProducts = () => {
     navigate("/products");
   };
+
+  const sliderList = [
+    {
+      id: 1,
+      image:
+        "https://img1.kakaocdn.net/thumb/R300x0@2x.q95.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fnew_store%2Fprod%2Fhome_tab%2Fbanner%2Fmain_banner_20221219135731_231e0e37b1784c64b2acb1c5cb0d9873.jpg",
+      title: "마음의 일너 피스",
+      desc: "지치고 힘들 때 인센스 스틱으로\n평화를 되찾아보세요.",
+    },
+    {
+      id: 2,
+      image:
+        "https://img1.kakaocdn.net/thumb/R300x0@2x.q95.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fnew_store%2Fprod%2Fhome_tab%2Fbanner%2Fmain_banner_20221219135731_231e0e37b1784c64b2acb1c5cb0d9873.jpg",
+      title: "마음의 이너 피스",
+      desc: "지치고 힘들 때 인센스 스틱으로\n평화를 되찾아보세요.",
+    },
+    {
+      id: 3,
+      image:
+        "https://img1.kakaocdn.net/thumb/R300x0@2x.q95.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fnew_store%2Fprod%2Fhome_tab%2Fbanner%2Fmain_banner_20221219135731_231e0e37b1784c64b2acb1c5cb0d9873.jpg",
+      title: "마음의 삼너 피스",
+      desc: "지치고 힘들 때 인센스 스틱으로\n평화를 되찾아보세요.",
+    },
+    {
+      id: 4,
+      image:
+        "https://img1.kakaocdn.net/thumb/R300x0@2x.q95.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fnew_store%2Fprod%2Fhome_tab%2Fbanner%2Fmain_banner_20221219135731_231e0e37b1784c64b2acb1c5cb0d9873.jpg",
+      title: "마음의 사너 피스",
+      desc: "지치고 힘들 때 인센스 스틱으로\n평화를 되찾아보세요.",
+    },
+  ];
+  const fakeSlideList = [
+    sliderList[sliderList.length - 1],
+    ...sliderList,
+    sliderList[0],
+  ];
+  // -------------------------------------------------------
+  const slideMoveWidth = 640;
+  const slideTime = 5000;
+  const slideAnimationTime = 500;
+
+  const [slideIdx, setSlideIdx] = useState(1);
+  const [correntIdx, setCorrentIdx] = useState(2);
+  const [moveX, setMoveX] = useState(640);
+  const [transition, setrtansition] = useState(
+    `all ${slideAnimationTime / 1000}s`
+  );
+
+  //우측 끝으로 갈 시 transition 삭제 후 리셋. 리셋 후에 transition 활성화
+  const slideReset = () => {
+    setrtansition("");
+    setCorrentIdx(2);
+    setMoveX(640);
+    setTimeout(() => {
+      setrtansition("all 0.5s");
+    }, slideAnimationTime);
+  };
+
+  // 오토 슬라이드
+  useEffect(() => {
+    const loop = setInterval(() => {
+      if (slideIdx >= sliderList.length) {
+        setSlideIdx(1);
+        setCorrentIdx(correntIdx + 1);
+        setMoveX(correntIdx * slideMoveWidth);
+
+        setTimeout(() => {
+          slideReset();
+        }, slideAnimationTime);
+      } else {
+        setSlideIdx(slideIdx + 1);
+        setCorrentIdx(correntIdx + 1);
+        setMoveX(correntIdx * slideMoveWidth);
+      }
+    }, slideTime);
+
+    return () => {
+      clearInterval(loop);
+    };
+  }, [slideIdx, moveX]);
+
   return (
     <main>
-      <SliderWrap>
-        <div className="slideImg">
-          <div className="content">
-            <div className="title">마음의 이너 피스</div>
-            <div className="desc">
-              지치고 힘들 때 인센스 스틱으로 <br />
-              평화를 되찾아보세요.
-            </div>
-          </div>
+      <SliderWrap
+        width={fakeSlideList.length}
+        transition={transition}
+        translate={moveX}
+      >
+        <ul>
+          {fakeSlideList.map((list) => (
+            <SlideList key={list.id} slideImg={list.image}>
+              <div className="content">
+                <div className="title">{list.title}</div>
+                <div className="desc">{list.desc}</div>
+              </div>
+            </SlideList>
+          ))}
+        </ul>
+        <div className="pageNumber">
+          {slideIdx}/{sliderList.length}
         </div>
-        <div className="pageNumber">5/8</div>
       </SliderWrap>
       <CaractorCategory />
       <NewItemWrap>
@@ -133,16 +222,37 @@ const HomePage = () => {
 const SliderWrap = styled.div`
   width: 100%;
   height: 512px;
+  overflow: hidden;
   position: relative;
-  .slideImg {
-    width: 100%;
-    height: 100%;
-    background-image: url("https://img1.kakaocdn.net/thumb/R300x0@2x.q95.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fnew_store%2Fprod%2Fhome_tab%2Fbanner%2Fmain_banner_20221219135731_231e0e37b1784c64b2acb1c5cb0d9873.jpg");
-    background-size: cover;
-    background-position: center;
-    position: relative;
-    cursor: pointer;
+  ul {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: ${({ width }) => width * 640 + "px"};
+    transform: ${({ translate }) => `translateX(${-translate}px)`};
+    transition: ${({ transition }) => transition};
   }
+  .pageNumber {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    color: rgb(255, 255, 255);
+    font-size: 11px;
+    padding: 0 6px;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 16px;
+    line-height: 19px;
+  }
+`;
+const SlideList = styled.li`
+  width: 640px;
+  height: 512px;
+  background-image: url(${({ slideImg }) => slideImg});
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  cursor: pointer;
   .content {
     position: absolute;
     left: 20px;
@@ -158,17 +268,7 @@ const SliderWrap = styled.div`
     margin-top: 10px;
     font-size: 18px;
     line-height: 21px;
-  }
-  .pageNumber {
-    position: absolute;
-    right: 16px;
-    bottom: 16px;
-    color: rgb(255, 255, 255);
-    font-size: 11px;
-    padding: 0 6px;
-    background-color: rgba(0, 0, 0, 0.4);
-    border-radius: 16px;
-    line-height: 19px;
+    white-space: pre;
   }
 `;
 

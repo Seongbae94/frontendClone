@@ -13,7 +13,7 @@ import ProductsPage from "./pages/ProductsPage";
 
 import OrderHistory from "./pages/OrderHistory";
 import MyPageLayout from "./components/layout/MyPageLayout";
-import Orderbasket from "./pages/Orderbasket";
+// import Orderbasket from "./pages/Orderbasket";
 function App() {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -47,7 +47,7 @@ function App() {
             </div>
           }
         />
-        <Route
+        {/* <Route
           path="/mypage/basket"
           element={
             <div>
@@ -55,7 +55,7 @@ function App() {
               <Orderbasket />
             </div>
           }
-        />
+        /> */}
         <Route path="/*" element={<HomePage />} />
       </Routes>
     </Layout>

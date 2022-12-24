@@ -1,4 +1,18 @@
+import { useState } from "react";
 import styled from "styled-components";
+
+const ExplainDropdown = ({ title, children }) => {
+  const [explainDisplay, setExplainDisplay] = useState(false);
+  const ActiveExplain = () => {
+    setExplainDisplay(!explainDisplay);
+  };
+  return (
+    <li onClick={ActiveExplain}>
+      {title} <i></i>
+      <DropdownDesc explainDisplay={explainDisplay}>{children}</DropdownDesc>
+    </li>
+  );
+};
 
 const ProductsPage = () => {
   return (
@@ -32,12 +46,8 @@ const ProductsPage = () => {
       </Promotion>
       <BuyExplain>
         <ul>
-          <li>
-            배송•반품 <i></i>
-          </li>
-          <li>
-            구매 시 주의사항<i></i>
-          </li>
+          <ExplainDropdown title="배송•반품">ss</ExplainDropdown>
+          <ExplainDropdown title="구매 시 주의사항"></ExplainDropdown>
         </ul>
       </BuyExplain>
       <BuyButton>구매하기</BuyButton>
@@ -142,6 +152,9 @@ const BuyExplain = styled.div`
     background-size: 700px 1000px;
     background-position: -360px 0;
   }
+`;
+const DropdownDesc = styled.div`
+  display: ${({ explainDisplay }) => (explainDisplay ? "block" : "none")};
 `;
 const BuyButton = styled.div`
   position: fixed;
