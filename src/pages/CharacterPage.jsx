@@ -32,10 +32,12 @@ const CharacterPage = () => {
                 <span>{charInfo.modalDesc2}</span>
                 <span>{charInfo.modalDesc3}</span>
                 {charInfo.modalDesc4}
-                <span>{charInfo.modalDesc}</span>
               </StModalStyle>
             </Modal>
           </div>
+          <h2 style={{ fontSize: "28px", margin: "20px 0 10px 0" }}>
+            {charInfo.nameKor}
+          </h2>
           <p className="text-font">{charInfo.desc1} </p>
           <p className="text-font">{charInfo.desc2}</p>
         </div>
@@ -198,10 +200,6 @@ const StHeader = styled.div`
     font-size: 14px;
     margin: 0;
     color: #000;
-  }
-
-  .text-font:first-of-type {
-    margin-top: 20px;
   }
 `;
 
