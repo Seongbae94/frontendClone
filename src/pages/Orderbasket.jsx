@@ -6,7 +6,6 @@ import {
   toggleCheck,
   addAllSum,
   subAllSum,
-  autoToggle,
   autoToggleAllTrue,
   autoToggleAllFalse,
 } from "../redux/modules/basketSlice";
@@ -17,49 +16,6 @@ const Orderbasket = () => {
   const dispatch = useDispatch();
   const data = useSelector((store) => store.basket.dummyInfo);
   const toggle = useSelector((store) => store.basket.toggle);
-
-  const baskets = useSelector((store) => store.basket.dummyInfo);
-  // console.log(baskets);
-
-  function tagAdd() {
-    let progress = document.querySelector(".progressTag");
-    let interval = 1000;
-    let updatesPerSecond = 1000 / 60;
-    let end = totalPrice >= 30000 ? 30000 : totalPrice;
-
-    function animator() {
-      progress.value = progress.value + interval;
-      if (progress.value + interval < end) {
-        setTimeout(animator, updatesPerSecond);
-      } else {
-        progress.value = end;
-      }
-    }
-
-    setTimeout(() => {
-      animator();
-    }, updatesPerSecond);
-  }
-
-  function tagSub() {
-    let progress = document.querySelector(".progressTag");
-    let interval = 1000;
-    let updatesPerSecond = 1000 / 60;
-    let start = totalPrice >= 30000 ? 30000 : totalPrice;
-
-    function animator() {
-      progress.value = progress.value - interval;
-      if (progress.value - interval > start) {
-        setTimeout(animator, updatesPerSecond);
-      } else {
-        progress.value = start;
-      }
-    }
-
-    setTimeout(() => {
-      animator();
-    }, updatesPerSecond);
-  }
 
   const Clicked = () => {
     dispatch(toggleCheck());
@@ -74,16 +30,65 @@ const Orderbasket = () => {
     dispatch(autoToggleAllTrue());
   };
 
+  useEffect(() => {
+    setPercentage(totalPrice);
+  }, [totalPrice]);
+
+  const [percentage, setPercentage] = useState(0);
+  console.log(totalPrice);
+
   return (
     <StContainer>
-      <div className="headerFont">3만원 이상 구매시 무료배송</div>
-      <button onClick={tagAdd}>buttonAdd</button>
-      <button onClick={tagSub}>buttonSub</button>
-      <progress className="progressTag" value="0" max="30000" />
+      {totalPrice >= 30000 ? (
+        <div
+          className="headerFont"
+          style={{ marginBottom: "10px", fontWeight: "bold", color: "#ff447f" }}
+        >
+          무료배송
+        </div>
+      ) : (
+        <div
+          className="headerFont"
+          style={{ marginBottom: "10px", fontWeight: "bold" }}
+        >
+          3만원 이상 구매시 무료배송
+        </div>
+      )}
 
-      <StGuage>
-        <StGuagesm></StGuagesm>
-      </StGuage>
+      <div
+        style={{
+          height: "5px",
+          width: "100%",
+          backgroundColor: "#eee",
+          borderRadius: "5px",
+          marginBottom: "20px",
+        }}
+      >
+        <div
+          style={{
+            height: "100%",
+            width: `${
+              (percentage / 30000) * 100 >= 100
+                ? 100
+                : (percentage / 30000) * 100
+            }%`,
+            backgroundColor: "#ff447f",
+            transition: "width 0.5s",
+            borderRadius: "5px",
+          }}
+        >
+          <div
+            style={{
+              margin: "0 0 0 100%",
+              width: "100%",
+            }}
+          >
+            <StGuage>
+              <StGuagesm></StGuagesm>
+            </StGuage>
+          </div>
+        </div>
+      </div>
       <div
         style={{
           fontSize: "15px",
@@ -101,20 +106,15 @@ const Orderbasket = () => {
             onClick={noClicked}
           ></StCheckIcon>
         )}
-        <div>전체</div>
+        <div style={{ fontSize: "14px" }}>
+          전체<span style={{ fontWeight: "bold" }}>{data.length}</span>
+        </div>
       </div>
       <StBorder></StBorder>
       {data.map((dat) => {
         return (
           <div key={dat.id}>
-            <Card
-              id={dat.id}
-              toggle={toggle}
-              setTotalPrice={setTotalPrice}
-              totalPrice={totalPrice}
-              tagAdd={tagAdd}
-              tagSub={tagSub}
-            />
+            <Card id={dat.id} toggle={toggle} setTotalPrice={setTotalPrice} />
           </div>
         );
       })}
@@ -141,47 +141,94 @@ const Orderbasket = () => {
           >
             상품금액
           </p>
-          <p>{totalPrice}원</p>
+          <p style={{ fontSize: "15px" }}>{totalPrice}원</p>
         </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            height: "30px",
-            padding: "0 10px",
-          }}
-        >
-          <p
+        {totalPrice >= 30000 ? (
+          <div
             style={{
-              fontSize: "15px",
-              padding: "0",
-              margin: "0",
-            }}
-          >
-            배송비
-          </p>
-          <p>{deliveryFee}원</p>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            padding: "0 10px",
-          }}
-        >
-          <p
-            style={{
-              fontWeight: "bold",
-              fontSize: "15px",
-              padding: "0",
-              margin: "0",
+              display: "flex",
+              justifyContent: "space-between",
               height: "30px",
+              padding: "0 10px",
             }}
           >
-            총 결제금액
-          </p>
-          <p>{deliveryFee + totalPrice}원</p>
-        </div>
+            <p
+              style={{
+                fontSize: "15px",
+                padding: "0",
+                margin: "0",
+              }}
+            >
+              배송비
+            </p>
+            <p>무료</p>
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              height: "30px",
+              padding: "0 10px",
+            }}
+          >
+            <p
+              style={{
+                fontSize: "15px",
+                padding: "0",
+                margin: "0",
+              }}
+            >
+              배송비
+            </p>
+            <p>{deliveryFee}원</p>
+          </div>
+        )}
+
+        {totalPrice >= 30000 ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              padding: "0 10px",
+            }}
+          >
+            <p
+              style={{
+                fontWeight: "bold",
+                fontSize: "15px",
+                padding: "0",
+                margin: "0",
+                height: "30px",
+              }}
+            >
+              총 결제금액
+            </p>
+            <p>{totalPrice}원</p>
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              padding: "0 10px",
+            }}
+          >
+            <p
+              style={{
+                fontWeight: "bold",
+                fontSize: "15px",
+                padding: "0",
+                margin: "0",
+                height: "30px",
+              }}
+            >
+              총 결제금액
+            </p>
+            <p>{deliveryFee + totalPrice}원</p>
+          </div>
+        )}
+
         <p
           style={{
             fontSize: "13px",
@@ -197,6 +244,23 @@ const Orderbasket = () => {
 };
 
 export default Orderbasket;
+
+const StProgressBar = styled.div`
+  animation-duration: 1s;
+  animation-name: slide;
+
+  @keyframes slide {
+    from {
+      margin-right: 100%;
+      width: 300%;
+    }
+
+    to {
+      margin-right: 0%;
+      width: 100%;
+    }
+  }
+`;
 
 const StCheckIcon = styled.div`
   display: block;
@@ -266,10 +330,14 @@ const StGuage = styled.div`
   height: 16px;
 
   border-radius: 100%;
-  background-color: green;
+  background-color: #ff447f;
 
   position: relative;
-  transform: translate(0, 0);
+  /* top: 23px; */
+  top: -5px;
+  right: 8px;
+
+  /* transform: translate(0, 0); */
   /* left: calc(var() / 30000 * 100%); */
 `;
 
