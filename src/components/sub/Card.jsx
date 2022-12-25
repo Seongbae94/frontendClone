@@ -12,8 +12,7 @@ import {
 } from "../../redux/modules/basketSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-const Card = ({ toggle, setTotalPrice, id }) => {
-  const [clicked, setClicked] = useState(false);
+const Card = ({ setTotalPrice, id }) => {
   const dispatch = useDispatch();
   const baskets = useSelector((store) => store.basket.dummyInfo);
 

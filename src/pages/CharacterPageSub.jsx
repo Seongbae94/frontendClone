@@ -2,42 +2,42 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import CaractorCategory from "../components/category/Category";
 import Modal from "../components/modal/Modal";
-import { useParams } from "react-router-dom";
-import charInfos from "../components/sub/db/data.json";
 
-const CharacterPage = () => {
+const CharacterPageSub = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { id } = useParams();
-  const charInfo = charInfos.character.find((char) => char.id === +id);
-  console.log(charInfo);
   return (
     <StContainer>
       <CaractorCategory />
       <StHeader>
         <div className="mainImg">
           <div className="imgContainer">
-            <img className="charImg" src={charInfo.imageUrl} />
+            <img className="charImg" src={require("../amu.png")} />
             <img onClick={() => setIsOpen(true)} className="spreadImg" />
             <Modal onClose={() => setIsOpen(false)} open={isOpen}>
               <StModalStyle>
-                <img src={charInfo.modalImageUrl} className="CharImg" />
+                <img src={require("../amu.png")} className="CharImg" />
                 <img
                   className="modal-close"
                   src="https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/ico_close.png"
                   onClick={() => setIsOpen(false)}
                 />
-                <h1>{charInfo.nameEng}</h1>
-                <p>{charInfo.title}</p>
-                <span>{charInfo.modalDesc1}</span>
-                <span>{charInfo.modalDesc2}</span>
-                <span>{charInfo.modalDesc3}</span>
-                {charInfo.modalDesc4}
-                <span>{charInfo.modalDesc}</span>
+                <h1>RYAN</h1>
+                <p>갈기가 없는 것이 콤플렉스인 수사자</p>
+                <span>
+                  큰 덩치와 무뚝뚝한 표정으로 오해를 많이 사지만, 사실
+                  누구보다도 여리고 섬세한 소녀감성을 지닌 반전 매력의 소유자!
+                </span>
+                <span>
+                  원래 아프리카 둥둥섬 왕위 계승자였으나, 자유로운 삶을 동경해
+                  탈출!
+                </span>
+                <span>카카오프렌즈의 든든한 조언자 역할을맡고 있습니다.</span>
+                꼬리가 길면 잡히기 때문에, 꼬리가 짧습니다.
               </StModalStyle>
             </Modal>
           </div>
-          <p className="text-font">{charInfo.desc1} </p>
-          <p className="text-font">{charInfo.desc2}</p>
+          <p className="text-font">머나먼 둥둥섬을 떠나 자유를 찾아온 왕자. </p>
+          <p className="text-font">나는 갈기 없는 숫사자 컴플렉야 (어쩔) </p>
         </div>
       </StHeader>
       <div style={{ height: "1px", backgroundColor: "#dedfe0" }}></div>
@@ -88,12 +88,11 @@ const CharacterPage = () => {
   );
 };
 
-export default CharacterPage;
+export default CharacterPageSub;
 
 const StModalStyle = styled.div`
   width: 280px;
-  /* height: 363px; */
-  margin: 20px 0;
+  height: 363px;
   background-color: white;
   border-radius: 20px;
 
@@ -102,7 +101,7 @@ const StModalStyle = styled.div`
   justify-content: center;
   align-items: center;
 
-  padding: 90px 15px 50px 15px;
+  padding: 15px 15px 0 15px;
 
   position: relative;
 
@@ -123,7 +122,7 @@ const StModalStyle = styled.div`
 
     top: 0;
 
-    transform: translate(0, -60%);
+    transform: translate(0, -70%);
   }
 
   .modal-close {
