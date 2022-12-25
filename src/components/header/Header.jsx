@@ -15,7 +15,7 @@ const Nav = ({ title }) => {
         navigate("/best");
         break;
       case "캐릭터관":
-        navigate("/profile");
+        navigate("/profile/1");
         break;
       case "마이":
         navigate("/mypage/basket");
