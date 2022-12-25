@@ -18,29 +18,23 @@ const Card = ({ toggle, setTotalPrice, id }) => {
   const baskets = useSelector((store) => store.basket.dummyInfo);
 
   const basket = baskets.find((basket) => basket.id === id);
-  const totalPrice = useSelector((store) => store.basket.totalPrice);
+  const priceAll = useSelector((store) => store.basket.totalPrice);
 
   //props로 받은 값을 initial value로 업데이트 하기 위해선 useEffect써야함
   useEffect(() => {
-    setTotalPrice(totalPrice);
-  }, [totalPrice]);
-
-  useEffect(() => {
-    setClicked(toggle);
-  }, [toggle]);
+    setTotalPrice(priceAll);
+  }, [priceAll]);
 
   useEffect(() => {
     dispatch(autoToggleAll());
   }, [basket.toggle]);
 
   const noChecked = () => {
-    // setClicked((prev) => !prev);
     dispatch(toggleEach(id));
     dispatch(subEachCheckedTotal(id));
   };
 
   const Checked = () => {
-    // setClicked((prev) => !prev);
     dispatch(toggleEach(id));
     dispatch(addEachCheckedTotal(id));
   };
