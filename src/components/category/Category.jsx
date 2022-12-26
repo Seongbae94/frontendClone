@@ -1,18 +1,22 @@
 import styled from "styled-components";
 import characters from "../sub/db/data.json";
-import { useNavigate } from "react-router-dom";
 
-const CaractorCategory = () => {
-  const navigate = useNavigate();
+const CaractorCategory = ({ onClick, clickCategoryId }) => {
   return (
     <CharectorCategory>
       <ul>
         {characters.character.map((char) => {
           return (
-            <li key={char.id} onClick={() => navigate(`/profile/${char.id}`)}>
+            <CategoryList
+              isActive={char.id === clickCategoryId ? true : false}
+              key={char.id}
+              onClick={() => {
+                onClick(char.id);
+              }}
+            >
               <img src={char.imageUrl} />
               <div className="listName">{char.nameKor}</div>
-            </li>
+            </CategoryList>
           );
         })}
       </ul>
@@ -21,9 +25,8 @@ const CaractorCategory = () => {
 };
 
 const CharectorCategory = styled.div`
-  width: 100%;
   height: 74px;
-  margin: 20px 0;
+  margin: 20px auto;
   ul {
     display: flex;
     gap: 14px;
@@ -31,24 +34,28 @@ const CharectorCategory = styled.div`
     list-style: none;
     padding: 0;
   }
-  li {
-    width: 55px;
-    height: 100%;
-    cursor: pointer;
-  }
-
+`;
+const CategoryList = styled.li`
+  width: 55px;
+  height: 100%;
+  position: relative;
+  cursor: pointer;
   img {
     width: 55px;
     height: 55px;
+    border-radius: 50%;
   }
-  /* .listImg {
-    width: 55px;
-    height: 55px;
-    margin-bottom: 6px;
-    background-image: url("https://img1.kakaocdn.net/thumb/R55x55@2x.q100/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fnew_store%2Fprod%2Fhome_tab%2Flink-shortcut%2Flink_shortcut_20221213234338_9a00ec6a44f34e109179115c14f3f2dc.jpg");
-    background-size: cover;
-    background-position: center;
-  } */
+  &::after {
+    content: "";
+    display: ${({ isActive }) => (isActive ? "block" : "none")};
+    position: absolute;
+    left: -1px;
+    top: -1px;
+    width: 57px;
+    height: 57px;
+    border: 1px solid #ff6644;
+    border-radius: 50%;
+  }
   .listName {
     color: #757575;
     text-align: center;

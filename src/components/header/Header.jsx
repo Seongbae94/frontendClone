@@ -36,7 +36,7 @@ const Nav = ({ title }) => {
       if (nowRoute === "/best" && title === "베스트") {
         setActiveNav("Active");
       }
-      if (nowRoute === "/profile" && title === "캐릭터관") {
+      if (nowRoute.includes("/profile") && title === "캐릭터관") {
         setActiveNav("Active");
       }
       if (nowRoute.includes("/mypage") && title === "마이") {

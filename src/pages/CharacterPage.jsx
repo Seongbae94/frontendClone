@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import CaractorCategory from "../components/category/Category";
 import Modal from "../components/modal/Modal";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import charInfos from "../components/sub/db/data.json";
 import productInfos from "../components/sub/db/data.json";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,9 +19,21 @@ const CharacterPage = () => {
   const productInfos = useSelector((store) => store.basket);
   const productInfo = productInfos[`${charInfo.nameEng}`];
 
+  const navigate = useNavigate();
+
+  const [clickCategoryId, setClickCategoryId] = useState(1);
+
+  const gotoProfile = (id) => {
+    navigate(`/profile/${id}`);
+    setClickCategoryId(id);
+  };
+
   return (
     <StContainer>
-      <CaractorCategory />
+      <CaractorCategory
+        onClick={gotoProfile}
+        clickCategoryId={clickCategoryId}
+      />
       <StHeader>
         <div className="mainImg">
           <div className="imgContainer">
