@@ -9,13 +9,14 @@ import {
   subEachCheckedTotal,
   autoToggleAll,
   toggleEach,
+  removeFromCart,
 } from "../../redux/modules/basketSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { priceToString } from "./utils/PriceToString";
 
-const Card = ({ setTotalPrice, id }) => {
+const BasketCard = ({ setTotalPrice, id }) => {
   const dispatch = useDispatch();
-  const baskets = useSelector((store) => store.basket.dummyInfo);
+  const baskets = useSelector((store) => store.basket.carts);
 
   const basket = baskets.find((basket) => basket.id === id);
   const priceAll = useSelector((store) => store.basket.totalPrice);
@@ -56,6 +57,11 @@ const Card = ({ setTotalPrice, id }) => {
     dispatch(subProductCount(id));
   };
 
+  const removeFromBasket = () => {
+    console.log(baskets);
+    dispatch(removeFromCart(id));
+  };
+
   return (
     <div>
       <StCard style={{ display: "flex", padding: "10px", width: "100%" }}>
@@ -64,6 +70,7 @@ const Card = ({ setTotalPrice, id }) => {
             position: "absolute",
             right: "0",
           }}
+          onClick={() => removeFromBasket(id)}
         ></StCloseIcon>
 
         {basket.toggle ? (
@@ -121,7 +128,7 @@ const Card = ({ setTotalPrice, id }) => {
   );
 };
 
-export default Card;
+export default BasketCard;
 
 const StCard = styled.div`
   display: flex;
