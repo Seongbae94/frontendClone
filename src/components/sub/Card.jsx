@@ -11,6 +11,7 @@ import {
   toggleEach,
 } from "../../redux/modules/basketSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { priceToString } from "./utils/PriceToString";
 
 const Card = ({ setTotalPrice, id }) => {
   const dispatch = useDispatch();
@@ -73,7 +74,7 @@ const Card = ({ setTotalPrice, id }) => {
             onClick={Checked}
           ></StCheckIcon>
         )}
-        <img src={require("../../amu.png")} />
+        <img src={basket.imageUrl} />
         <div
           style={{
             display: "flex",
@@ -84,7 +85,7 @@ const Card = ({ setTotalPrice, id }) => {
           <p style={{ margin: "0", fontSize: "15px" }}>{basket.title}</p>
 
           <h3 style={{ margin: "10px 0", fontSize: "16px" }}>
-            {basket.price}원
+            {priceToString(basket.price)}원
           </h3>
 
           {/* <div style={{ display: "flex", alignItems: "center" }}> */}

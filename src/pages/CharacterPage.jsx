@@ -4,12 +4,21 @@ import CaractorCategory from "../components/category/Category";
 import Modal from "../components/modal/Modal";
 import { useParams } from "react-router-dom";
 import charInfos from "../components/sub/db/data.json";
+import productInfos from "../components/sub/db/data.json";
+import { useDispatch, useSelector } from "react-redux";
+import { priceToString } from "../components/sub/utils/PriceToString";
+import { productBasketTrue } from "../redux/modules/basketSlice";
+import CharProductCard from "../components/sub/CharProductCard";
 
 const CharacterPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { id } = useParams();
+  //charInfo = 모달 캐릭터 정보 - hard code라 안 건드려도 됌
   const charInfo = charInfos.character.find((char) => char.id === +id);
-  console.log(charInfo);
+
+  const productInfos = useSelector((store) => store.basket);
+  const productInfo = productInfos[`${charInfo.nameEng}`];
+
   return (
     <StContainer>
       <CaractorCategory />
@@ -45,46 +54,15 @@ const CharacterPage = () => {
       <div style={{ height: "1px", backgroundColor: "#dedfe0" }}></div>
 
       <StGridBox>
-        <StProduct>
-          <img style={{ width: "100%" }} src={require("../amu.png")} />
-          <div className="flex">
-            <p className="title">[온라인 전용] 메가바디필로우_토끼어피치</p>
-            <span className="icon"></span>
-          </div>
-          <p className="price">99,000원</p>
-        </StProduct>
-        <StProduct>
-          <img style={{ width: "100%" }} src={require("../amu.png")} />
-          <div className="flex">
-            <p className="title">[온라인 전용] 메가바디필로우_토끼어피치</p>
-            <span className="icon"></span>
-          </div>
-          <p className="price">99,000원</p>
-        </StProduct>
-        <StProduct>
-          <img style={{ width: "100%" }} src={require("../amu.png")} />
-          <div className="flex">
-            <p className="title">[온라인 전용] 메가바디필로우_토끼어피치</p>
-            <span className="icon"></span>
-          </div>
-          <p className="price">99,000원</p>
-        </StProduct>
-        <StProduct>
-          <img style={{ width: "100%" }} src={require("../amu.png")} />
-          <div className="flex">
-            <p className="title">[온라인 전용] 메가바디필로우_토끼어피치</p>
-            <span className="icon"></span>
-          </div>
-          <p className="price">99,000원</p>
-        </StProduct>
-        <StProduct>
-          <img style={{ width: "100%" }} src={require("../amu.png")} />
-          <div className="flex">
-            <p className="title">[온라인 전용] 메가바디필로우_토끼어피치</p>
-            <span className="icon"></span>
-          </div>
-          <p className="price">99,000원</p>
-        </StProduct>
+        {productInfo.map((product) => {
+          return (
+            <CharProductCard
+              key={product.id}
+              product={product}
+              charInfo={charInfo}
+            />
+          );
+        })}
       </StGridBox>
     </StContainer>
   );
@@ -217,8 +195,9 @@ const StGridBox = styled.div`
 
 const StProduct = styled.div`
   max-width: 188px;
-  /* background-color: yellow; */
   margin-bottom: 40px;
+
+  cursor: pointer;
 
   .flex {
     display: flex;
