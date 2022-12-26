@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import CaractorCategory from "../components/category/Category";
+import MiddBaner from "../components/middleBaner/MiddleBaner";
+
+import charInfos from "../components/sub/db/data.json";
+
+import { priceToString } from "../components/sub/utils/PriceToString";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -192,6 +198,25 @@ const HomePage = () => {
     }
   }, [nowGoodsPage]);
 
+  // ----------------------------------------------------------
+
+  const [charactorProducts, setCharactorProducts] = useState([]);
+
+  const [clickCategoryId, setClickCategoryId] = useState(1);
+
+  const productInfos = useSelector((store) => store.basket);
+
+  const selectCategory = (id) => {
+    const charInfo = charInfos.character.find((char) => char.id === +id);
+    const productInfo = productInfos[`${charInfo.nameEng}`];
+    setCharactorProducts(productInfo);
+    setClickCategoryId(id);
+  };
+
+  useEffect(() => {
+    selectCategory(1);
+  }, []);
+
   return (
     <main>
       <SliderWrap
@@ -217,19 +242,22 @@ const HomePage = () => {
       </SliderWrap>
       <CaractorGoodsWrap goodsMoveX={goodsMoveX} length={goodsList.length}>
         <div className="title">내가 좋아하는 캐릭터</div>
-        <CaractorCategory />
+        <CaractorCategory
+          onClick={selectCategory}
+          clickCategoryId={clickCategoryId}
+        />
         <div className="listScreen">
           <div className="goodsLists">
-            {goodsList.map((list) => (
+            {charactorProducts.map((list) => (
               <div key={list.id} className="goodsList">
                 <div
                   className="goodsImg"
-                  style={{ backgroundImage: `Url(${list.image})` }}
+                  style={{ backgroundImage: `Url(${list.imageUrl})` }}
                 ></div>
                 <div className="goodsContent">
-                  <div>2023 탁상용 캘린더</div>
+                  <div>{list.title}</div>
                   <div>
-                    <strong>6,000</strong>원
+                    <strong>{priceToString(list.price)}</strong>원
                   </div>
                 </div>
               </div>
@@ -244,63 +272,112 @@ const HomePage = () => {
           <div className={goodsRightBtn} onClick={rightMove}></div>
         </div>
       </CaractorGoodsWrap>
+      <MiddBaner />
       <NewItemWrap>
         <div className="title">새로 나왔어요</div>
         <ul>
+          <li>
+            <div
+              className="listImg"
+              style={{
+                backgroundImage:
+                  "url(https://img1.kakaocdn.net/thumb/R142x142@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221220143210135_8809814929864_AW_00.jpg)",
+              }}
+            ></div>
+            <div className="goodsName">HBD폭죽카드_카카오프렌즈</div>
+            <div className="price">
+              <strong>7,900</strong>원
+            </div>
+          </li>
           <li onClick={gotoProducts}>
-            <div className="listImg"></div>
+            <div
+              className="listImg"
+              style={{
+                backgroundImage:
+                  "url(https://img1.kakaocdn.net/thumb/R142x142@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221215150812192_8809814929796_AW_00.jpg)",
+              }}
+            ></div>
             <div className="goodsName">드레스업인형_춘식이</div>
             <div className="price">
               <strong>19,000</strong>원
             </div>
           </li>
           <li>
-            <div className="listImg"></div>
-            <div className="goodsName">드레스업인형_춘식이</div>
+            <div
+              className="listImg"
+              style={{
+                backgroundImage:
+                  "url(https://img1.kakaocdn.net/thumb/R142x142@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221221175116076_8809810212519_AW_00.jpg)",
+              }}
+            ></div>
+            <div className="goodsName">밀키 스텐 텀블러 춘식이</div>
             <div className="price">
-              <strong>19,000</strong>원
+              <strong>22,000</strong>원
             </div>
           </li>
           <li>
-            <div className="listImg"></div>
-            <div className="goodsName">드레스업인형_춘식이</div>
+            <div
+              className="listImg"
+              style={{
+                backgroundImage:
+                  "url(https://img1.kakaocdn.net/thumb/R142x142@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221221175241014_8809810212502_AW_00.jpg)",
+              }}
+            ></div>
+            <div className="goodsName">밀키 스텐 텀블러 어피치</div>
             <div className="price">
-              <strong>19,000</strong>원
+              <strong>22,000</strong>원
             </div>
           </li>
           <li>
-            <div className="listImg"></div>
-            <div className="goodsName">드레스업인형_춘식이</div>
+            <div
+              className="listImg"
+              style={{
+                backgroundImage:
+                  "url(https://img1.kakaocdn.net/thumb/R142x142@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221221175251014_8809810212496_AW_00.jpg)",
+              }}
+            ></div>
+            <div className="goodsName">밀키 스텐 텀블러 라이언</div>
             <div className="price">
-              <strong>19,000</strong>원
+              <strong>22,000</strong>원
             </div>
           </li>
           <li>
-            <div className="listImg"></div>
-            <div className="goodsName">드레스업인형_춘식이</div>
+            <div
+              className="listImg"
+              style={{
+                backgroundImage:
+                  "url(https://img1.kakaocdn.net/thumb/R142x142@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20220926162315633_8809814921318_8809814921318_AW_00.jpg)",
+              }}
+            ></div>
+            <div className="goodsName">춘식이 팝콘메이커</div>
             <div className="price">
-              <strong>19,000</strong>원
+              <strong>39,000</strong>원
             </div>
           </li>
           <li>
-            <div className="listImg"></div>
-            <div className="goodsName">드레스업인형_춘식이</div>
+            <div
+              className="listImg"
+              style={{
+                backgroundImage:
+                  "url(https://img1.kakaocdn.net/thumb/R142x142@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221221111200745_8809810212236_AW_00.jpg)",
+              }}
+            ></div>
+            <div className="goodsName">춘식이 허그 슬리퍼</div>
             <div className="price">
-              <strong>19,000</strong>원
+              <strong>29,000</strong>원
             </div>
           </li>
           <li>
-            <div className="listImg"></div>
-            <div className="goodsName">드레스업인형_춘식이</div>
+            <div
+              className="listImg"
+              style={{
+                backgroundImage:
+                  "url(https://img1.kakaocdn.net/thumb/R142x142@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221221110117323_8809790654590_AW_00.jpg)",
+              }}
+            ></div>
+            <div className="goodsName">도어벨 라이언&춘식이</div>
             <div className="price">
-              <strong>19,000</strong>원
-            </div>
-          </li>
-          <li>
-            <div className="listImg"></div>
-            <div className="goodsName">드레스업인형_춘식이</div>
-            <div className="price">
-              <strong>19,000</strong>원
+              <strong>29,900</strong>원
             </div>
           </li>
         </ul>
@@ -314,35 +391,50 @@ const HomePage = () => {
             autoPlay
             loop
             playsInline
-            poster="https://img1.kakaocdn.net/thumb/R320x0.q82/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fnew_store%2Fprod%2Fhome_tab%2Frecommend_movie%2Frecommend_movie_20221213182911_392ad9eade8b43b18343dfa327fa535b.mp4.jpg"
+            poster="https://img1.kakaocdn.net/thumb/R320x0.q82/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fhome_tab%2Frecommend_movie%2Frecommend_movie_20221226092025_88ff7ce7815f4204a31cb20ae1e84353.mp4.jpg"
           >
-            <source src="https://t1.kakaocdn.net/friends/new_store/prod/home_tab/recommend_movie/recommend_movie_20221213182911_392ad9eade8b43b18343dfa327fa535b.mp4.recommend_movie.1080p.mp4" />
+            <source src="https://t1.kakaocdn.net/friends/prod/home_tab/recommend_movie/recommend_movie_20221226092025_88ff7ce7815f4204a31cb20ae1e84353.mp4.recommend_movie.1080p.mp4" />
           </video>
           <div className="videoContent">
-            <div className="title">달콤한 크리스마스</div>
-            <div className="desc">디저트로 변신한 프렌즈</div>
+            <div className="title">2023 미리보기</div>
+            <div className="desc">2023 미리보기</div>
           </div>
         </div>
         <ul>
           <li>
-            <div className="listImg"></div>
-            <div className="listTitle">마이크리스마스쿠키 스노우볼</div>
+            <div
+              className="listImg"
+              style={{
+                backgroundImage: `url(https://img1.kakaocdn.net/thumb/R125x125@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221013181207775_8809814928324_AW_00.jpg)`,
+              }}
+            ></div>
+            <div className="listTitle">2023 탁상용 캘린더</div>
             <div className="listDesc">
-              <strong>29,000</strong>원
+              <strong>6,000</strong>원
             </div>
           </li>
           <li>
-            <div className="listImg"></div>
-            <div className="listTitle">마이크리스마스쿠키 스노우볼</div>
+            <div
+              className="listImg"
+              style={{
+                backgroundImage: `url(https://img1.kakaocdn.net/thumb/R125x125@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221013181015265_8809814928317_AW_00.jpg)`,
+              }}
+            ></div>
+            <div className="listTitle">[온라인]2023 다이어리세트_어피치</div>
             <div className="listDesc">
-              <strong>29,000</strong>원
+              <strong>27,000</strong>원
             </div>
           </li>
           <li>
-            <div className="listImg"></div>
-            <div className="listTitle">마이크리스마스쿠키 스노우볼</div>
+            <div
+              className="listImg"
+              style={{
+                backgroundImage: `url(https://img1.kakaocdn.net/thumb/R125x125@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221013181050228_8809814928287_AW_00.jpg)`,
+              }}
+            ></div>
+            <div className="listTitle">2023 다이어리_라이언</div>
             <div className="listDesc">
-              <strong>29,000</strong>원
+              <strong>16,000</strong>원
             </div>
           </li>
         </ul>
@@ -540,7 +632,6 @@ const NewItemWrap = styled.div`
   .listImg {
     width: 100%;
     height: 142px;
-    background-image: Url("https://img1.kakaocdn.net/thumb/R142x142@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221215150812192_8809814929796_AW_00.jpg");
     background-size: cover;
     background-position: center;
   }
@@ -570,11 +661,24 @@ const ExhibitionWrap = styled.div`
     cursor: pointer;
     position: relative;
   }
+  .videoWrap::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 42.934%;
+    z-index: 50;
+    background: linear-gradient(rgba(0, 0, 0, 0), black);
+    opacity: 0.3;
+  }
   .videoContent {
     position: absolute;
     left: 20px;
     bottom: 40px;
     color: white;
+    z-index: 100;
   }
   .videoContent .title {
     font-size: 20px;
@@ -590,14 +694,14 @@ const ExhibitionWrap = styled.div`
   ul {
     display: flex;
     height: 269.33px;
-    padding: 0 15px;
+    padding: 0 20px;
     gap: 10px;
     margin: 0;
     margin-top: -25px;
     list-style: none;
   }
   li {
-    flex-grow: 1;
+    flex: 33%;
     z-index: 100;
     height: 100%;
     border-radius: 10px;
@@ -608,7 +712,6 @@ const ExhibitionWrap = styled.div`
   .listImg {
     width: 100%;
     height: 193.33px;
-    background-image: Url("https://img1.kakaocdn.net/thumb/R125x125@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221114004816054_8809814929246_AW_00.jpg");
     background-size: cover;
     background-position: center;
   }
