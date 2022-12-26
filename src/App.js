@@ -13,7 +13,8 @@ import ProductsPage from "./pages/ProductsPage";
 
 import OrderHistory from "./pages/OrderHistory";
 import MyPageLayout from "./components/layout/MyPageLayout";
-// import Orderbasket from "./pages/Orderbasket";
+import Orderbasket from "./pages/Orderbasket";
+import CharacterPageSub from "./pages/CharacterPageSub";
 
 function App() {
   const location = useLocation();
@@ -37,7 +38,8 @@ function App() {
       <Routes>
         <Route exact path="/home" element={<HomePage />} />
         <Route path="/best" element={<BestPage />} />
-        <Route path="/profile" element={<CharacterPage />} />
+        <Route exact path="/profile" element={<CharacterPageSub />} />
+        <Route path="/profile/:id" element={<CharacterPage />} />
         <Route path="/products" element={<ProductsPage />} />
         <Route
           path="/mypage/orderlist"
@@ -48,7 +50,7 @@ function App() {
             </div>
           }
         />
-        {/* <Route
+        <Route
           path="/mypage/basket"
           element={
             <div>
@@ -56,7 +58,7 @@ function App() {
               <Orderbasket />
             </div>
           }
-        /> */}
+        />
         <Route path="/*" element={<HomePage />} />
       </Routes>
     </Layout>

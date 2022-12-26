@@ -14,9 +14,9 @@ const HomePage = () => {
     {
       id: 1,
       image:
-        "https://img1.kakaocdn.net/thumb/R300x0@2x.q95.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fnew_store%2Fprod%2Fhome_tab%2Fbanner%2Fmain_banner_20221219135731_231e0e37b1784c64b2acb1c5cb0d9873.jpg",
-      title: "마음의 일너 피스",
-      desc: "지치고 힘들 때 인센스 스틱으로\n평화를 되찾아보세요.",
+        "https://img1.kakaocdn.net/thumb/R300x0@2x.q95.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fhome_tab%2Fbanner%2Fmain_banner_20221222140316_252944f5104a40949d74ab39330c1677.jpg",
+      title: "패피 춘식이 등장",
+      desc: "2가지 착장으로 연출 가능\n드레스업 춘식이 인형",
     },
     {
       id: 2,
@@ -28,16 +28,16 @@ const HomePage = () => {
     {
       id: 3,
       image:
-        "https://img1.kakaocdn.net/thumb/R300x0@2x.q95.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fnew_store%2Fprod%2Fhome_tab%2Fbanner%2Fmain_banner_20221219135731_231e0e37b1784c64b2acb1c5cb0d9873.jpg",
-      title: "마음의 삼너 피스",
-      desc: "지치고 힘들 때 인센스 스틱으로\n평화를 되찾아보세요.",
+        "https://img1.kakaocdn.net/thumb/R300x0@2x.q95.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fhome_tab%2Fbanner%2Fmain_banner_20221220174956_c469cfba6621497291db1be5be3e8835.jpg",
+      title: "춘식이와 팝콘을 와삭",
+      desc: "사먹을 필요 없어요\n직접 만드는 고소한 팝콘",
     },
     {
       id: 4,
       image:
-        "https://img1.kakaocdn.net/thumb/R300x0@2x.q95.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fnew_store%2Fprod%2Fhome_tab%2Fbanner%2Fmain_banner_20221219135731_231e0e37b1784c64b2acb1c5cb0d9873.jpg",
-      title: "마음의 사너 피스",
-      desc: "지치고 힘들 때 인센스 스틱으로\n평화를 되찾아보세요.",
+        "https://img1.kakaocdn.net/thumb/R300x0@2x.q95.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fhome_tab%2Fbanner%2Fmain_banner_20221208155324_f5adde6ed6924f38a69feeabbd099559.jpg",
+      title: "행운의 황금 당근인형",
+      desc: "라이언과 황금 당근 뽑고\n새해 기운 듬뿍 받아가요!",
     },
   ];
   const firstList = {
@@ -60,34 +60,63 @@ const HomePage = () => {
   const [transition, setrtansition] = useState(
     `all ${slideAnimationTime / 1000}s`
   );
+  const slideLeftMove = () => {
+    if (slideIdx <= 1) {
+      setSlideIdx(sliderList.length);
+      setCorrentIdx(correntIdx - 1);
 
-  //우측 끝으로 갈 시 transition 삭제 후 리셋. 리셋 후에 transition 활성화
-  const slideReset = () => {
-    setrtansition("");
-    setCorrentIdx(2);
-    setMoveX(640);
-    setTimeout(() => {
-      setrtansition(`all ${slideAnimationTime / 1000}s`);
-    }, slideAnimationTime);
+      setTimeout(() => {
+        slideReset("left");
+      }, slideAnimationTime);
+    } else {
+      setSlideIdx(slideIdx - 1);
+      setCorrentIdx(correntIdx - 1);
+    }
+  };
+
+  const slideRightMove = () => {
+    if (slideIdx >= sliderList.length) {
+      setSlideIdx(1);
+      setCorrentIdx(correntIdx + 1);
+
+      setTimeout(() => {
+        slideReset("right");
+      }, slideAnimationTime);
+    } else {
+      setSlideIdx(slideIdx + 1);
+      setCorrentIdx(correntIdx + 1);
+    }
+  };
+
+  //transition 삭제 후 리셋. 리셋 후에 transition 활성화
+  const slideReset = (direction) => {
+    switch (direction) {
+      case "right":
+        setrtansition("");
+        setCorrentIdx(2);
+        setMoveX(slideMoveWidth);
+        setTimeout(() => {
+          setrtansition(`all ${slideAnimationTime / 1000}s`);
+        }, slideAnimationTime);
+        break;
+      case "left":
+        setrtansition("");
+        setCorrentIdx(fakeSlideList.length - 1);
+        setMoveX(slideMoveWidth * sliderList.length);
+        setTimeout(() => {
+          setrtansition(`all ${slideAnimationTime / 1000}s`);
+        }, slideAnimationTime);
+        break;
+    }
   };
 
   // 오토 슬라이드
   useEffect(() => {
     const loop = setInterval(() => {
-      if (slideIdx >= sliderList.length) {
-        setSlideIdx(1);
-        setCorrentIdx(correntIdx + 1);
-        setMoveX(correntIdx * slideMoveWidth);
-
-        setTimeout(() => {
-          slideReset();
-        }, slideAnimationTime);
-      } else {
-        setSlideIdx(slideIdx + 1);
-        setCorrentIdx(correntIdx + 1);
-        setMoveX(correntIdx * slideMoveWidth);
-      }
+      slideRightMove();
     }, slideTime);
+
+    setMoveX((correntIdx - 1) * slideMoveWidth);
 
     return () => {
       clearInterval(loop);
@@ -180,6 +209,8 @@ const HomePage = () => {
             </SlideList>
           ))}
         </ul>
+        <div className="slideBtn left" onClick={slideLeftMove}></div>
+        <div className="slideBtn right" onClick={slideRightMove}></div>
         <div className="pageNumber">
           {slideIdx}/{sliderList.length}
         </div>
@@ -334,6 +365,24 @@ const SliderWrap = styled.div`
     transform: ${({ translate }) => `translateX(${-translate}px)`};
     transition: ${({ transition }) => transition};
   }
+  .slideBtn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    background-image: url("	https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/ico_friends.png");
+    background-size: 700px 1000px;
+    cursor: pointer;
+  }
+  .slideBtn.left {
+    background-position: 0 -840px;
+    left: 20px;
+  }
+  .slideBtn.right {
+    background-position: -40px -840px;
+    right: 20px;
+  }
   .pageNumber {
     position: absolute;
     right: 16px;
@@ -359,6 +408,7 @@ const SlideList = styled.li`
     left: 20px;
     bottom: 30px;
     color: rgb(255, 255, 255);
+    z-index: 10;
   }
   .title {
     font-size: 32px;
@@ -370,6 +420,16 @@ const SlideList = styled.li`
     font-size: 18px;
     line-height: 21px;
     white-space: pre;
+  }
+  &::after {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 640px;
+    height: 273px;
+    background: linear-gradient(rgba(0, 0, 0, 0), black);
+    opacity: 0.4;
+    content: "";
   }
 `;
 const CaractorGoodsWrap = styled.div`
