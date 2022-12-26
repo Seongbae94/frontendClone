@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import Card from "../components/sub/Card";
+import BasketCard from "../components/sub/BasketCard";
+import { priceToString } from "../components/sub/utils/PriceToString";
 import {
   toggleCheck,
   addAllSum,
@@ -14,13 +15,16 @@ const Orderbasket = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const deliveryFee = 3000;
   const dispatch = useDispatch();
-  const data = useSelector((store) => store.basket.dummyInfo);
+  // const products = useSelector((store) => store.basket.dummyInfo);
+  const products = useSelector((store) => store.basket.carts);
+
+  console.log(products);
+  const { count } = useSelector((store) => store.basket);
   const toggle = useSelector((store) => store.basket.toggle);
 
   const Clicked = () => {
     dispatch(toggleCheck());
     dispatch(subAllSum());
-    // dispatch(autoToggle());
     dispatch(autoToggleAllFalse());
   };
 
@@ -29,13 +33,6 @@ const Orderbasket = () => {
     dispatch(addAllSum());
     dispatch(autoToggleAllTrue());
   };
-
-  useEffect(() => {
-    setPercentage(totalPrice);
-  }, [totalPrice]);
-
-  const [percentage, setPercentage] = useState(0);
-  console.log(totalPrice);
 
   return (
     <StContainer>
@@ -64,30 +61,57 @@ const Orderbasket = () => {
           marginBottom: "20px",
         }}
       >
-        <div
-          style={{
-            height: "100%",
-            width: `${
-              (percentage / 30000) * 100 >= 100
-                ? 100
-                : (percentage / 30000) * 100
-            }%`,
-            backgroundColor: "#ff447f",
-            transition: "width 0.5s",
-            borderRadius: "5px",
-          }}
-        >
+        {totalPrice ? (
           <div
             style={{
-              margin: "0 0 0 100%",
-              width: "100%",
+              height: "100%",
+              width: `${
+                (totalPrice / 30000) * 100 >= 100
+                  ? 100
+                  : (totalPrice / 30000) * 100
+              }%`,
+              backgroundColor: "#ff447f",
+              transition: "width 0.5s",
+              borderRadius: "5px",
             }}
           >
-            <StGuage>
-              <StGuagesm></StGuagesm>
-            </StGuage>
+            <div
+              style={{
+                margin: "0 0 0 100%",
+                width: "100%",
+              }}
+            >
+              <StGuage>
+                <StGuagesm></StGuagesm>
+              </StGuage>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div
+            style={{
+              height: "100%",
+              width: `${
+                (totalPrice / 30000) * 100 >= 100
+                  ? 100
+                  : (totalPrice / 30000) * 100
+              }%`,
+              backgroundColor: "#ff447f",
+              transition: "width 0.5s",
+              borderRadius: "5px",
+            }}
+          >
+            <div
+              style={{
+                margin: "0 0 0 100%",
+                width: "100%",
+              }}
+            >
+              <StGuage bgColor="#eee">
+                <StGuagesm animation="none"></StGuagesm>
+              </StGuage>
+            </div>
+          </div>
+        )}
       </div>
       <div
         style={{
@@ -107,14 +131,18 @@ const Orderbasket = () => {
           ></StCheckIcon>
         )}
         <div style={{ fontSize: "14px" }}>
-          전체<span style={{ fontWeight: "bold" }}>{data.length}</span>
+          전체<span style={{ fontWeight: "bold" }}>{count}</span>
         </div>
       </div>
       <StBorder></StBorder>
-      {data.map((dat) => {
+      {products.map((product) => {
         return (
-          <div key={dat.id}>
-            <Card id={dat.id} toggle={toggle} setTotalPrice={setTotalPrice} />
+          <div key={product.id}>
+            <BasketCard
+              id={product.id}
+              toggle={toggle}
+              setTotalPrice={setTotalPrice}
+            />
           </div>
         );
       })}
@@ -141,7 +169,9 @@ const Orderbasket = () => {
           >
             상품금액
           </p>
-          <p style={{ fontSize: "15px" }}>{totalPrice}원</p>
+          <p style={{ fontSize: "15px", padding: "0", margin: "0" }}>
+            {priceToString(totalPrice)}원
+          </p>
         </div>
         {totalPrice >= 30000 ? (
           <div
@@ -161,7 +191,15 @@ const Orderbasket = () => {
             >
               배송비
             </p>
-            <p>무료</p>
+            <p
+              style={{
+                fontSize: "15px",
+                padding: "0",
+                margin: "0",
+              }}
+            >
+              무료
+            </p>
           </div>
         ) : (
           <div
@@ -181,7 +219,15 @@ const Orderbasket = () => {
             >
               배송비
             </p>
-            <p>{deliveryFee}원</p>
+            <p
+              style={{
+                fontSize: "15px",
+                padding: "0",
+                margin: "0",
+              }}
+            >
+              {priceToString(deliveryFee)}원
+            </p>
           </div>
         )}
 
@@ -204,7 +250,17 @@ const Orderbasket = () => {
             >
               총 결제금액
             </p>
-            <p>{totalPrice}원</p>
+            <p
+              style={{
+                fontWeight: "bold",
+                fontSize: "15px",
+                padding: "0",
+                margin: "0",
+                height: "30px",
+              }}
+            >
+              {priceToString(totalPrice)}원
+            </p>
           </div>
         ) : (
           <div
@@ -225,7 +281,17 @@ const Orderbasket = () => {
             >
               총 결제금액
             </p>
-            <p>{deliveryFee + totalPrice}원</p>
+            <p
+              style={{
+                fontWeight: "bold",
+                fontSize: "15px",
+                padding: "0",
+                margin: "0",
+                height: "30px",
+              }}
+            >
+              {priceToString(deliveryFee + totalPrice)}원
+            </p>
           </div>
         )}
 
@@ -330,7 +396,7 @@ const StGuage = styled.div`
   height: 16px;
 
   border-radius: 100%;
-  background-color: #ff447f;
+  background-color: ${(prop) => prop.bgColor || "#ff447f"};
 
   position: relative;
   /* top: 23px; */
@@ -342,6 +408,8 @@ const StGuage = styled.div`
 `;
 
 const StGuagesm = styled.div`
+  animation: ${(prop) => prop.animation || "blinker"} 0.5s linear infinite;
+
   width: 6px;
   height: 6px;
 
@@ -353,4 +421,10 @@ const StGuagesm = styled.div`
   right: 50%;
 
   transform: translate(50%, -50%);
+
+  @keyframes blinker {
+    50% {
+      opacity: 0;
+    }
+  }
 `;
