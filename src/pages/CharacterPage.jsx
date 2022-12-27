@@ -10,20 +10,30 @@ import CharProductCard from "../components/sub/CharProductCard";
 const CharacterPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [charProducts, setCharProducts] = useState([]);
+  const [cartProducts, setCartProducts] = useState([]);
+  const [sameId, setSameId] = useState([]);
   const { id } = useParams();
   //charInfo = 모달 캐릭터 정보 - hard code라 안 건드려도 됌
   const charInfo = charInfos.character.find((char) => char.id === +id);
   const charName = charInfo.uniqueName;
 
-  const fetchData = async () => {
+  const fetchCharData = async () => {
     const { data } = await axios.get(
       `https://dev.kimmand0o0.shop/api/products/characters/${charName}`
     );
     setCharProducts(data.products);
   };
 
+  const fetchCartData = async () => {
+    const { data } = await axios.get(
+      "https://dev.kimmand0o0.shop/api/users/carts"
+    );
+    setCartProducts(data.Carts);
+  };
+
   useEffect(() => {
-    fetchData();
+    fetchCharData();
+    fetchCartData();
   }, [charName]);
 
   const navigate = useNavigate();
@@ -34,6 +44,25 @@ const CharacterPage = () => {
     navigate(`/profile/${id}`);
     setClickCategoryId(id);
   };
+  useEffect(() => {}, [charProducts, cartProducts]);
+
+  // useEffect(() => {
+  //   fetchCartData();
+  // }, [charName]);
+
+  //캐릭터 페이지에서 productId 모음
+  const productIdGroup = [];
+  charProducts?.map((product) => productIdGroup.push(product.productId));
+
+  //장바구니 페이지에서 productId
+  const includeGroup = [];
+  cartProducts?.products?.map((product) =>
+    productIdGroup.includes(product.productId)
+      ? setSameId((prev) => [...prev, product.productId])
+      : null
+  );
+
+  console.log(sameId);
 
   return (
     <StContainer>
@@ -78,7 +107,8 @@ const CharacterPage = () => {
             <CharProductCard
               key={product.productId}
               product={product}
-              fetchData={fetchData}
+              fetchCharData={fetchCharData}
+              includeGroup={includeGroup}
             />
           );
         })}
