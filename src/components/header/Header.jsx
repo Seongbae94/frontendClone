@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
+import { setLogin } from "../../redux/modules/userSlice";
 
 const Nav = ({ title }) => {
   const navigate = useNavigate();
@@ -54,9 +55,12 @@ const Nav = ({ title }) => {
 
 const Header = () => {
   const [subActive, setSubActive] = useState(true);
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const nowRoute = useSelector((state) => state.routes.route.pathname);
+  const isLogined = useSelector((state) => state.user.login);
 
   useEffect(() => {
     if (nowRoute) {
@@ -75,13 +79,44 @@ const Header = () => {
     navigate("/mypage/basket");
   };
 
+  const redirectUrl = process.env.REACT_APP_REDIRECT_URL;
+  const clientId = process.env.REACT_APP_CLIENT_ID;
+
+  const socialLogin = () => {
+    window.location.href = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUrl}`;
+  };
+
+  const socialLogout = () => {
+    localStorage.removeItem("accesstoken");
+    localStorage.removeItem("username");
+    localStorage.removeItem("refreshtoken");
+    dispatch(setLogin(false));
+  };
+
   return (
     <>
       <Wrap>
         <Main>
           <div className="ico_set basket" onClick={gotoBasket}></div>
+
           <div className="mainLogo" onClick={gotoMain}></div>
-          <div className="Login">로그인</div>
+
+          {isLogined ? (
+            <div className="userInfo">
+              <div className="helloComment">
+                <span>{localStorage.getItem("username")}</span>님, 환영합니다!
+              </div>
+              <div className="LoginAndOut" onClick={socialLogout}>
+                로그아웃
+              </div>
+            </div>
+          ) : (
+            <div className="userInfo">
+              <div className="LoginAndOut" onClick={socialLogin}>
+                로그인
+              </div>
+            </div>
+          )}
         </Main>
         <Sub subActive={subActive}>
           <ul>
@@ -110,10 +145,16 @@ const Main = styled.div`
   width: 100%;
   height: 46px;
 
+  position: relative;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+
   .ico_set {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
     width: 24px;
     height: 24px;
     background: url("https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/ico_friends.png")
@@ -132,9 +173,23 @@ const Main = styled.div`
     background-size: cover;
     background-position: center;
     cursor: pointer;
+    justify-items: center;
   }
-  .Login {
+  .LoginAndOut {
     cursor: pointer;
+  }
+  .userInfo {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+  }
+  .helloComment {
+    margin-right: 10px;
+  }
+  .helloComment span {
+    text-decoration: underline;
   }
 `;
 const Sub = styled.div`
