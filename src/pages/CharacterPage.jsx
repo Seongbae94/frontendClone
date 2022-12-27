@@ -1,23 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import CaractorCategory from "../components/category/Category";
 import Modal from "../components/modal/Modal";
 import { useParams } from "react-router-dom";
 import charInfos from "../components/sub/db/data.json";
-import productInfos from "../components/sub/db/data.json";
-import { useDispatch, useSelector } from "react-redux";
-import { priceToString } from "../components/sub/utils/PriceToString";
-import { productBasketTrue } from "../redux/modules/basketSlice";
+import axios from "axios";
 import CharProductCard from "../components/sub/CharProductCard";
 
 const CharacterPage = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [charProducts, setCharProducts] = useState([]);
   const { id } = useParams();
   //charInfo = 모달 캐릭터 정보 - hard code라 안 건드려도 됌
   const charInfo = charInfos.character.find((char) => char.id === +id);
+  const charName = charInfo.uniqueName;
 
-  const productInfos = useSelector((store) => store.basket);
-  const productInfo = productInfos[`${charInfo.nameEng}`];
+  const fetchData = async () => {
+    const { data } = await axios.get(
+      `https://dev.kimmand0o0.shop/api/products/characters/${charName}`
+    );
+    setCharProducts(data.products);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [charName]);
 
   return (
     <StContainer>
@@ -54,12 +61,12 @@ const CharacterPage = () => {
       <div style={{ height: "1px", backgroundColor: "#dedfe0" }}></div>
 
       <StGridBox>
-        {productInfo.map((product) => {
+        {charProducts.map((product) => {
           return (
             <CharProductCard
-              key={product.id}
+              key={product.productId}
               product={product}
-              charInfo={charInfo}
+              fetchData={fetchData}
             />
           );
         })}
@@ -116,7 +123,7 @@ const StModalStyle = styled.div`
     right: 15px;
   }
 
-  span {
+  div {
     text-align: center;
     margin-bottom: 7px;
   }
@@ -201,6 +208,7 @@ const StProduct = styled.div`
 
   .flex {
     display: flex;
+    justify-content: space-between;
   }
 
   .title {
@@ -209,7 +217,7 @@ const StProduct = styled.div`
   }
 
   .price {
-    margin: 10px 0 0 0;
+    margin: 5px 0 0 0;
     font-weight: bold;
   }
 
@@ -223,8 +231,8 @@ const StProduct = styled.div`
     background-size: 700px 1000px;
     color: transparent;
 
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     background-position: -283px -220px;
     margin: 0;
   }
