@@ -1,24 +1,35 @@
-import React from "react";
-import { priceToString } from "./utils/PriceToString";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../../redux/modules/basketSlice";
+import axios from "axios";
 
-const CharProductCard = ({ product, charInfo }) => {
-  const dispatch = useDispatch();
+const CharProductCard = ({ product, fetchData }) => {
+  const [clicked, setClicked] = useState(false);
 
-  const addToBasket = (id) => {
-    dispatch(addToCart({ id, name: charInfo.nameEng }));
+  const addToBasket = async () => {
+    setClicked(true);
+    // await axios.post(`https://dev.kimmand0o0.shop/api/users/carts`, {
+    //   productId: product.productId,
+    //   amount: 1,
+    // });
+    // fetchData();
   };
 
   return (
-    <StProduct key={product.id}>
+    <StProduct key={product.productId}>
       <img style={{ width: "100%" }} src={product.imageUrl} />
       <div className="flex">
-        <p className="title">{product.title}</p>
-        <span className="icon" onClick={() => addToBasket(product.id)}></span>
+        <p className="title">{product.productName}</p>
+        {clicked ? (
+          <StIcon
+            location="-320px -220px"
+            onClick={() => addToBasket(product.id)}
+          ></StIcon>
+        ) : (
+          <StIcon onClick={() => addToBasket(product.id)}></StIcon>
+        )}
+        {/* <StIcon onClick={() => addToBasket(product.id)}></StIcon> */}
       </div>
-      <p className="price">{priceToString(product.price)}원</p>
+      <p className="price">{product.productPrice}원</p>
     </StProduct>
   );
 };
@@ -46,23 +57,23 @@ const StProduct = styled.div`
     font-weight: bold;
   }
 
-  .icon {
-    display: block;
-    overflow: hidden;
-    font-size: 1px;
-    line-height: 0;
-    background: url("https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/ico_friends.png")
-      0 0 no-repeat;
-    background-size: 700px 1000px;
-    color: transparent;
-
-    width: 32px;
-    height: 32px;
-    background-position: -283px -220px;
-    margin: 0;
-  }
-
   @media screen and (max-width: 630px) {
     max-width: 283px;
   }
+`;
+
+const StIcon = styled.div`
+  display: block;
+  overflow: hidden;
+  font-size: 1px;
+  line-height: 0;
+  background: url("https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/ico_friends.png")
+    0 0 no-repeat;
+  background-size: 700px 1000px;
+  color: transparent;
+
+  width: 32px;
+  height: 32px;
+  background-position: ${(prop) => prop.location || "-280px -220px"};
+  margin: 0;
 `;

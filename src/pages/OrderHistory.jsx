@@ -1,27 +1,50 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const OrderHistory = () => {
+  const [orderlist, setOrderlist] = useState({});
+
+  const fetchData = async () => {
+    const { data } = await axios.get(
+      "https://dev.kimmand0o0.shop/api/users/orderLists"
+    );
+    //유저아이디가 1인 정보를 저장한다.
+    data.OrderLists.map((list) =>
+      list.userId === 1 ? setOrderlist(list) : setOrderlist({})
+    );
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <StContainer>
       <StCards>
-        <StCard>
-          <h1>2022.10.20</h1>
-          <StCombinedBg>
-            <StBg>
-              <img src={require("../amu.png")} />
-              <div className="contents">
-                <p>춘식이 허그 목쿠션</p>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <StIcon className="icon"></StIcon>
-                  <p>구매확정</p>
-                </div>
-              </div>
-            </StBg>
-            <StCircleL></StCircleL>
-            <StCircleR></StCircleR>
-          </StCombinedBg>
-        </StCard>
+        {orderlist.products &&
+          orderlist.products.map((product) => {
+            return (
+              <StCard key={product.productId}>
+                <h1>order</h1>
+                <StCombinedBg>
+                  <StBg>
+                    <img src={require("../amu.png")} />
+                    <div className="contents">
+                      <p>춘식이 허그 목쿠션 x {product.amount}</p>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <StIcon className="icon"></StIcon>
+                        <p>구매확정</p>
+                      </div>
+                    </div>
+                  </StBg>
+                  <StCircleL></StCircleL>
+                  <StCircleR></StCircleR>
+                </StCombinedBg>
+              </StCard>
+            );
+          })}
+
         <StCard>
           <h1>2022.10.20</h1>
           <StCombinedBg>
@@ -58,8 +81,12 @@ const OrderHistory = () => {
         </StCard>
       </StCards>
       <ul>
-        <li>최근 5년 내역만 확인 가능합니다.</li>
-        <li>취소/교환/반품신청은 상세 주문내역에서 가능합니다.</li>
+        <li style={{ margin: "30px 0 0 0" }}>
+          최근 5년 내역만 확인 가능합니다.
+        </li>
+        <li style={{ padding: "10px 0 20px 0" }}>
+          취소/교환/반품신청은 상세 주문내역에서 가능합니다.
+        </li>
       </ul>
     </StContainer>
   );
@@ -69,16 +96,11 @@ export default OrderHistory;
 
 const StContainer = styled.div`
   width: 100%;
-  height: 612px;
   background-color: #f2f2f2;
 
   ul {
     font-size: 13px;
     color: #909092;
-  }
-
-  li {
-    margin: 5px 0;
   }
 `;
 
