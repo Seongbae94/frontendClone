@@ -15,6 +15,8 @@ import OrderHistory from "./pages/OrderHistory";
 import MyPageLayout from "./components/layout/MyPageLayout";
 import Orderbasket from "./pages/Orderbasket";
 import CharacterPageSub from "./pages/CharacterPageSub";
+import axios from "axios";
+import { setLogin } from "./redux/modules/userSlice";
 
 function App() {
   const location = useLocation();
@@ -26,13 +28,48 @@ function App() {
     dispatch(getRoutes(location));
   }, [location]);
 
-  //"/"로 진입 시 "/home"으로 리다이렉트
   const nowRoute = useSelector((state) => state.routes.route.pathname);
+
   useEffect(() => {
+    //"/"로 진입 시 "/home"으로 리다이렉트
     if (nowRoute === "/") {
       navigate("/home");
     }
+
+    //"/login"일 경우
+    if (nowRoute === "/login") {
+      // 인가 코드 받기
+      const code = location.search.split("code=")[1];
+
+      //코드를 api에 전달
+      (async () => {
+        try {
+          const data = await axios.get(
+            `${process.env.REACT_APP_URL}/api/login/kakao?code=${code}`
+          );
+          localStorage.setItem("accesstoken", data.headers.accesstoken);
+          localStorage.setItem("refreshtoken", data.headers.refreshtoken);
+          localStorage.setItem("username", data.data.name);
+
+          dispatch(setLogin(true));
+
+          navigate("/home");
+        } catch (err) {
+          console.error(err);
+        }
+      })();
+    }
   }, [nowRoute]);
+
+  useEffect(() => {
+    if (localStorage.getItem("refreshtoken")) {
+      dispatch(setLogin(true));
+    } else {
+      dispatch(setLogin(false));
+    }
+  }, [nowRoute]);
+
+  // ----------------------------------------------------------
   return (
     <Layout>
       <Routes>

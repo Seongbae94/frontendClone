@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
@@ -11,7 +12,7 @@ import { priceToString } from "../components/sub/utils/PriceToString";
 
 const HomePage = () => {
   const navigate = useNavigate();
-
+  // -----------------------------------------------------
   const gotoProducts = () => {
     navigate("/products");
   };
@@ -66,31 +67,49 @@ const HomePage = () => {
   const [transition, setrtansition] = useState(
     `all ${slideAnimationTime / 1000}s`
   );
+  const [btnLoading, setBtnLoading] = useState(false);
+
   const slideLeftMove = () => {
-    if (slideIdx <= 1) {
-      setSlideIdx(sliderList.length);
-      setCorrentIdx(correntIdx - 1);
+    if (!btnLoading) {
+      setBtnLoading(true);
+
+      if (slideIdx <= 1) {
+        setSlideIdx(sliderList.length);
+        setCorrentIdx(correntIdx - 1);
+
+        setTimeout(() => {
+          slideReset("left");
+        }, slideAnimationTime);
+      } else {
+        setSlideIdx(slideIdx - 1);
+        setCorrentIdx(correntIdx - 1);
+      }
 
       setTimeout(() => {
-        slideReset("left");
-      }, slideAnimationTime);
-    } else {
-      setSlideIdx(slideIdx - 1);
-      setCorrentIdx(correntIdx - 1);
+        setBtnLoading(false);
+      }, slideAnimationTime + 500);
     }
   };
 
   const slideRightMove = () => {
-    if (slideIdx >= sliderList.length) {
-      setSlideIdx(1);
-      setCorrentIdx(correntIdx + 1);
+    if (!btnLoading) {
+      setBtnLoading(true);
+
+      if (slideIdx >= sliderList.length) {
+        setSlideIdx(1);
+        setCorrentIdx(correntIdx + 1);
+
+        setTimeout(() => {
+          slideReset("right");
+        }, slideAnimationTime);
+      } else {
+        setSlideIdx(slideIdx + 1);
+        setCorrentIdx(correntIdx + 1);
+      }
 
       setTimeout(() => {
-        slideReset("right");
-      }, slideAnimationTime);
-    } else {
-      setSlideIdx(slideIdx + 1);
-      setCorrentIdx(correntIdx + 1);
+        setBtnLoading(false);
+      }, slideAnimationTime + 500);
     }
   };
 
@@ -101,6 +120,7 @@ const HomePage = () => {
         setrtansition("");
         setCorrentIdx(2);
         setMoveX(slideMoveWidth);
+
         setTimeout(() => {
           setrtansition(`all ${slideAnimationTime / 1000}s`);
         }, slideAnimationTime);
@@ -129,45 +149,8 @@ const HomePage = () => {
     };
   }, [slideIdx, moveX]);
   // ----------------------------------------------------------
-  const goodsList = [
-    {
-      id: 1,
-      image:
-        "https://img1.kakaocdn.net/thumb/R125x125@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221013181207775_8809814928324_AW_00.jpg",
-    },
-    {
-      id: 2,
-      image:
-        "https://img1.kakaocdn.net/thumb/R125x125@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221013181207775_8809814928324_AW_00.jpg",
-    },
-    {
-      id: 3,
-      image:
-        "https://img1.kakaocdn.net/thumb/R125x125@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221013181207775_8809814928324_AW_00.jpg",
-    },
-    {
-      id: 4,
-      image:
-        "https://img1.kakaocdn.net/thumb/R125x125@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221013181207775_8809814928324_AW_00.jpg",
-    },
-    {
-      id: 5,
-      image:
-        "https://img1.kakaocdn.net/thumb/R125x125@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221013181207775_8809814928324_AW_00.jpg",
-    },
-    {
-      id: 6,
-      image:
-        "https://img1.kakaocdn.net/thumb/R125x125@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221013181207775_8809814928324_AW_00.jpg",
-    },
-    {
-      id: 10,
-      image:
-        "https://img1.kakaocdn.net/thumb/R125x125@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221013181207775_8809814928324_AW_00.jpg",
-    },
-  ];
   const TotalGoodsPage = 3;
-  const moveLength = 170;
+  const moveLength = 300;
   const [nowGoodsPage, setNowGoodsPage] = useState(1);
   const [goodsMoveX, setGoodsMoveX] = useState(0);
 
@@ -204,12 +187,21 @@ const HomePage = () => {
 
   const [clickCategoryId, setClickCategoryId] = useState(1);
 
-  const productInfos = useSelector((store) => store.basket);
-
   const selectCategory = (id) => {
     const charInfo = charInfos.character.find((char) => char.id === +id);
-    const productInfo = productInfos[`${charInfo.nameEng}`];
-    setCharactorProducts(productInfo);
+    const charName = charInfo.uniqueName;
+
+    (async () => {
+      const { data } = await axios.get(
+        `https://dev.kimmand0o0.shop/api/products/characters/${charName}`
+      );
+      if (data.products.length > 10) {
+        const newProduct = data.products.slice(0, 9);
+        setCharactorProducts(newProduct);
+      } else {
+        setCharactorProducts(data.products);
+      }
+    })();
     setClickCategoryId(id);
   };
 
@@ -240,7 +232,10 @@ const HomePage = () => {
           {slideIdx}/{sliderList.length}
         </div>
       </SliderWrap>
-      <CaractorGoodsWrap goodsMoveX={goodsMoveX} length={goodsList.length}>
+      <CaractorGoodsWrap
+        goodsMoveX={goodsMoveX}
+        length={charactorProducts.length}
+      >
         <div className="title">내가 좋아하는 캐릭터</div>
         <CaractorCategory
           onClick={selectCategory}
@@ -249,15 +244,15 @@ const HomePage = () => {
         <div className="listScreen">
           <div className="goodsLists">
             {charactorProducts.map((list) => (
-              <div key={list.id} className="goodsList">
+              <div key={list.productId} className="goodsList">
                 <div
                   className="goodsImg"
                   style={{ backgroundImage: `Url(${list.imageUrl})` }}
                 ></div>
                 <div className="goodsContent">
-                  <div>{list.title}</div>
+                  <div>{list.productName}</div>
                   <div>
-                    <strong>{priceToString(list.price)}</strong>원
+                    <strong>{priceToString(list.productPrice)}</strong>원
                   </div>
                 </div>
               </div>
@@ -548,7 +543,7 @@ const CaractorGoodsWrap = styled.div`
     padding-left: 5px;
     margin: 0;
     transform: ${({ goodsMoveX }) => `translateX(-${goodsMoveX}px)`};
-    transition: all 0.5s;
+    transition: transform 0.5s;
   }
   .goodsList {
     width: 125px;
