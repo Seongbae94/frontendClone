@@ -150,7 +150,10 @@ const HomePage = () => {
   }, [slideIdx, moveX]);
   // ----------------------------------------------------------
   const TotalGoodsPage = 3;
-  const moveLength = 300;
+
+  const moveLength = 90;
+
+  // const moveLength = 370;
   const [nowGoodsPage, setNowGoodsPage] = useState(1);
   const [goodsMoveX, setGoodsMoveX] = useState(0);
 
@@ -196,12 +199,13 @@ const HomePage = () => {
         `https://dev.kimmand0o0.shop/api/products/characters/${charName}`
       );
       if (data.products.length > 10) {
-        const newProduct = data.products.slice(0, 9);
+        const newProduct = data.products.slice(0, 6);
         setCharactorProducts(newProduct);
       } else {
         setCharactorProducts(data.products);
       }
     })();
+    setNowGoodsPage(1);
     setClickCategoryId(id);
   };
 

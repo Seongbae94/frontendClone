@@ -47,6 +47,7 @@ function App() {
           const data = await axios.get(
             `${process.env.REACT_APP_URL}/api/login/kakao?code=${code}`
           );
+
           localStorage.setItem("accesstoken", data.headers.accesstoken);
           localStorage.setItem("refreshtoken", data.headers.refreshtoken);
           localStorage.setItem("username", data.data.name);
@@ -77,7 +78,7 @@ function App() {
         <Route path="/best" element={<BestPage />} />
         <Route exact path="/profile" element={<CharacterPageSub />} />
         <Route path="/profile/:id" element={<CharacterPage />} />
-        <Route path="/products" element={<ProductsPage />} />
+        <Route path="/products/:id" element={<ProductsPage />} />
         <Route
           path="/mypage/orderlist"
           element={
