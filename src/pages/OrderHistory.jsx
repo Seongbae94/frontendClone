@@ -26,52 +26,77 @@ const OrderHistory = () => {
   }, []);
 
   return (
-    <StContainer>
-      <StCards>
-        {orderlist &&
-          orderlist.reverse().map((products) => {
-            const day = products.createdAt;
-            const splited = day.split("T");
+    <div>
+      {orderlist && orderlist.length !== 0 ? (
+        <StContainer>
+          <StCards>
+            {orderlist &&
+              orderlist.reverse().map((products) => {
+                const day = products.createdAt;
+                const splited = day.split("T");
 
-            return (
-              <StCard key={products.orderListId}>
-                <h1>{splited[0]}</h1>
-                {products.products.map((product) => {
-                  return (
-                    <StCombinedBg key={product.productId}>
-                      <StBg>
-                        <img src={product.imageUrl} />
-                        <div className="contents">
-                          <p>
-                            {product.productName} x {product.amount}
-                          </p>
-                          {/* <p>{product.quantityPrice}</p> */}
-                          <div
-                            style={{ display: "flex", alignItems: "center" }}
-                          >
-                            <StIcon className="icon"></StIcon>
-                            <p>구매확정</p>
-                          </div>
-                        </div>
-                      </StBg>
-                      <StCircleL></StCircleL>
-                      <StCircleR></StCircleR>
-                    </StCombinedBg>
-                  );
-                })}
-              </StCard>
-            );
-          })}
-      </StCards>
-      <ul>
-        <li style={{ margin: "30px 0 0 0" }}>
-          최근 5년 내역만 확인 가능합니다.
-        </li>
-        <li style={{ padding: "10px 0 20px 0" }}>
-          취소/교환/반품신청은 상세 주문내역에서 가능합니다.
-        </li>
-      </ul>
-    </StContainer>
+                return (
+                  <StCard key={products.orderListId}>
+                    <h1>{splited[0]}</h1>
+                    {products.products.map((product) => {
+                      return (
+                        <StCombinedBg key={product.productId}>
+                          <StBg>
+                            <img src={product.imageUrl} />
+                            <div className="contents">
+                              <p>
+                                {product.productName} x {product.amount}
+                              </p>
+                              {/* <p>{product.quantityPrice}</p> */}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <StIcon className="icon"></StIcon>
+                                <p>구매확정</p>
+                              </div>
+                            </div>
+                          </StBg>
+                          <StCircleL></StCircleL>
+                          <StCircleR></StCircleR>
+                        </StCombinedBg>
+                      );
+                    })}
+                  </StCard>
+                );
+              })}
+          </StCards>
+          <ul>
+            <li style={{ margin: "30px 0 0 0" }}>
+              최근 5년 내역만 확인 가능합니다.
+            </li>
+            <li style={{ padding: "10px 0 20px 0" }}>
+              취소/교환/반품신청은 상세 주문내역에서 가능합니다.
+            </li>
+          </ul>
+        </StContainer>
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "640px",
+            height: "576px",
+            backgroundColor: "#f2f2f2",
+          }}
+        >
+          <img
+            style={{ width: "192px", height: "192px" }}
+            src="https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221228/112611/assets/images/m960/ico_empty_ryan.png"
+          />
+          <p style={{ color: "#aeaeaf" }}>아직 주문 내역이 없어요.</p>
+        </div>
+      )}
+    </div>
   );
 };
 
