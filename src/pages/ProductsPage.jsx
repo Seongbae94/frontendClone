@@ -43,7 +43,6 @@ const ProductsPage = () => {
       const { data } = await axios.get(
         `${process.env.REACT_APP_URL}/api/products/${params}`
       );
-      console.log(data.products);
       setProductData(data.products);
     })();
   }, []);
