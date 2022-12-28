@@ -1,59 +1,57 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { priceToString } from "../components/sub/utils/PriceToString";
 
 const BestPage = () => {
+  const navigate = useNavigate();
+
+  const [bestProducts, setBestProducts] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_URL}/api/products/hot`
+      );
+      setBestProducts(data.products);
+    })();
+  }, []);
+
+  const addBasket = () => {
+    console.log("hi");
+  };
+
+  const gotoDetail = (id) => {
+    navigate(`/products/${id}`);
+  };
+
   return (
     <StContainer>
       <StPopular>
         <div className="popular">지금 인기 있는</div>
         <StBasketIcon bgPosition="-270px -550px"></StBasketIcon>
       </StPopular>
-      {/* //map돌리기 */}
       <StCards>
-        <StCard>
-          <p className="rank">1</p>
-          <StCardImage src={require("../amu.png")} />
-          <StFlexStrech>
-            <p className="card-title" mr="5px">
-              드레스업인형_춘식이
-            </p>
-            <StBasketIcon>장바구니 담기</StBasketIcon>
-          </StFlexStrech>
-          <p className="price">19,000원</p>
-        </StCard>
-        <StCard>
-          <p className="rank">1</p>
-          <StCardImage src={require("../amu.png")} />
-          <StFlexStrech>
-            <p className="card-title" mr="5px">
-              드레스업인형_춘식이
-            </p>
-            <StBasketIcon>장바구니 담기</StBasketIcon>
-          </StFlexStrech>
-          <p className="price">19,000원</p>
-        </StCard>
-        <StCard>
-          <p className="rank">1</p>
-          <StCardImage src={require("../amu.png")} />
-          <StFlexStrech>
-            <p className="card-title" mr="5px">
-              드레스업인형_춘식이
-            </p>
-            <StBasketIcon>장바구니 담기</StBasketIcon>
-          </StFlexStrech>
-          <p className="price">19,000원</p>
-        </StCard>
-        <StCard>
-          <p className="rank">1</p>
-          <StCardImage src={require("../amu.png")} />
-          <StFlexStrech>
-            <p className="card-title" mr="5px">
-              드레스업인형_춘식이
-            </p>
-            <StBasketIcon>장바구니 담기</StBasketIcon>
-          </StFlexStrech>
-          <p className="price">19,000원</p>
-        </StCard>
+        {bestProducts.slice(0, 50).map((list) => (
+          <StCard
+            onClick={() => {
+              gotoDetail(list.productId);
+            }}
+            key={list.productId}
+            rank={bestProducts.indexOf(list) + 1}
+          >
+            <p className="rank">{bestProducts.indexOf(list) + 1}</p>
+            <StCardImage src={list.imageUrl} />
+            <StFlexStrech>
+              <p className="card-title" mr="5px">
+                {list.productName}
+              </p>
+              <StBasketIcon onClick={addBasket}>장바구니 담기</StBasketIcon>
+            </StFlexStrech>
+            <p className="price">{priceToString(list.productPrice)}원</p>
+          </StCard>
+        ))}
       </StCards>
     </StContainer>
   );
@@ -105,10 +103,12 @@ const StFlexStrech = styled.div`
 
 const StCard = styled.div`
   position: relative;
-  background-color: yellow;
+  border-radius: 10px;
   border-radius: 5px;
   width: 300px;
   height: 300px;
+
+  cursor: pointer;
 
   margin: 0 0 80px 10px;
 
@@ -119,7 +119,7 @@ const StCard = styled.div`
     width: 24px;
     height: 24px;
     border-radius: 5px;
-    background-color: #222;
+    background-color: ${({ rank }) => (rank <= 3 ? "#222" : "#aeaeaf")};
     position: absolute;
     color: white;
 
@@ -134,6 +134,17 @@ const StCard = styled.div`
 
   .card-title {
     margin: 5px 0 0;
+  }
+
+  &::after {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.04);
+    content: "";
+    border-radius: 10px;
   }
 `;
 

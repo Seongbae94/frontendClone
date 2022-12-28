@@ -38,7 +38,7 @@ const Orderbasket = () => {
   }
 
   const [toggle, setToggle] = useState(true);
-  const [click, setClick] = useState(true);
+  const [click, setClick] = useState(toggle);
   const [count, setCount] = useState(0);
 
   const toggleAll = () => {
@@ -145,7 +145,6 @@ const Orderbasket = () => {
                 <div key={product.productId}>
                   <BasketCard
                     product={product}
-                    // setTotalPrice={setTotalPrice}
                     fetchData={fetchData}
                     priceTotal={priceTotal}
                     setTotalPrice={setTotalPrice}
@@ -155,6 +154,7 @@ const Orderbasket = () => {
                     setToggleParent={setToggle}
                     count={count}
                     click={click}
+                    setClick={setClick}
                   />
                 </div>
               );
