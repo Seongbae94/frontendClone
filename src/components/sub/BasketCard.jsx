@@ -1,87 +1,143 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import {
-  addProductCount,
-  subProductCount,
-  addPriceByCount,
-  subPriceByCount,
-  addEachCheckedTotal,
-  subEachCheckedTotal,
-  autoToggleAll,
-  toggleEach,
-  removeFromCart,
-} from "../../redux/modules/basketSlice";
-import { useDispatch, useSelector } from "react-redux";
 import { priceToString } from "./utils/PriceToString";
+import CharModal from "../modal/CharModal";
+import axios from "axios";
 
-const BasketCard = ({ setTotalPrice, id }) => {
-  const dispatch = useDispatch();
-  const baskets = useSelector((store) => store.basket.carts);
+const BasketCard = ({
+  fetchData,
+  product,
+  priceTotal,
+  setTotalPrice,
+  toggleParent,
+  setCount,
+  carts,
+  count,
+  click,
+  setToggleParent,
+}) => {
+  const [toggle, setToggle] = useState(true);
 
-  const basket = baskets.find((basket) => basket.id === id);
-  const priceAll = useSelector((store) => store.basket.totalPrice);
+  const accesstoken = localStorage.getItem("accesstoken");
+  const refreshtoken = localStorage.getItem("refreshtoken");
 
-  //props로 받은 값을 initial value로 업데이트 하기 위해선 useEffect써야함
   useEffect(() => {
-    setTotalPrice(priceAll);
-  }, [priceAll]);
+    setTotalPrice(priceTotal);
+  }, []);
 
   useEffect(() => {
-    dispatch(autoToggleAll());
-  }, [basket.toggle]);
+    if (carts.length === count) {
+      setToggleParent(true);
+    } else {
+      setToggleParent(false);
+    }
+  }, [count]);
 
-  const noChecked = () => {
-    dispatch(toggleEach(id));
-    dispatch(subEachCheckedTotal(id));
+  useEffect(() => {
+    setToggle(click);
+  }, [click]);
+
+  useEffect(() => {
+    setCount(carts.length);
+  }, [carts.length]);
+
+  const reduceAmount = async ({ productId, amount }) => {
+    if (amount > 1) {
+      await axios.put(
+        `https://dev.kimmand0o0.shop/api/users/carts/${productId}`,
+        {
+          amount: amount - 1,
+        },
+        {
+          headers: {
+            accesstoken: accesstoken,
+            refreshtoken: refreshtoken,
+          },
+        }
+      );
+      fetchData();
+    }
   };
 
-  const Checked = () => {
-    dispatch(toggleEach(id));
-    dispatch(addEachCheckedTotal(id));
+  const reduceAmountWithPrice = async ({ productId, amount, price }) => {
+    if (amount > 1) {
+      await axios.put(
+        `https://dev.kimmand0o0.shop/api/users/carts/${productId}`,
+        {
+          amount: amount - 1,
+        },
+        {
+          headers: {
+            accesstoken: accesstoken,
+            refreshtoken: refreshtoken,
+          },
+        }
+      );
+      fetchData();
+      setTotalPrice((prev) => prev - price / amount);
+    }
   };
 
-  const addCountWithSum = () => {
-    dispatch(addProductCount(id));
-    dispatch(addPriceByCount(id));
+  const increaseAmount = async ({ productId, amount }) => {
+    await axios.put(
+      `https://dev.kimmand0o0.shop/api/users/carts/${productId}`,
+      {
+        amount: amount + 1,
+      },
+      {
+        headers: {
+          accesstoken: accesstoken,
+          refreshtoken: refreshtoken,
+        },
+      }
+    );
+    fetchData();
   };
 
-  const subCountWithSum = () => {
-    dispatch(subProductCount(id));
-    dispatch(subPriceByCount(id));
+  const increaseAmountWithPrice = async ({ productId, amount, price }) => {
+    await axios.put(
+      `https://dev.kimmand0o0.shop/api/users/carts/${productId}`,
+      {
+        amount: amount + 1,
+      },
+      {
+        headers: {
+          accesstoken: accesstoken,
+          refreshtoken: refreshtoken,
+        },
+      }
+    );
+    fetchData();
+    setTotalPrice((prev) => prev + price / amount);
   };
 
-  const addCountOnly = () => {
-    dispatch(addProductCount(id));
-  };
-  const subCountOnly = () => {
-    dispatch(subProductCount(id));
+  const removePrice = (productPrice) => {
+    setToggle(false);
+    setTotalPrice((prev) => prev - productPrice);
+    setCount((prev) => prev - 1);
   };
 
-  const removeFromBasket = () => {
-    console.log(baskets);
-    dispatch(removeFromCart(id));
+  const addPrice = (productPrice) => {
+    setToggle(true);
+    setTotalPrice((prev) => prev + productPrice);
+    setCount((prev) => prev + 1);
   };
 
   return (
-    <div>
-      <StCard style={{ display: "flex", padding: "10px", width: "100%" }}>
-        <StCloseIcon
-          style={{
-            position: "absolute",
-            right: "0",
-          }}
-          onClick={() => removeFromBasket(id)}
-        ></StCloseIcon>
-
-        {basket.toggle ? (
-          <StCheckIcon onClick={noChecked}></StCheckIcon>
+    <div key={product.productId}>
+      <StCard>
+        <CharModal fetchData={fetchData} product={product}></CharModal>
+        {toggle ? (
+          <StCheckIcon
+            onClick={() => removePrice(product.quantityPrice)}
+          ></StCheckIcon>
         ) : (
           <StCheckIcon
+            onClick={() => addPrice(product.quantityPrice)}
             bgPosition="-160px -220px"
-            onClick={Checked}
           ></StCheckIcon>
         )}
-        <img src={basket.imageUrl} />
+        <img src={product.imageUrl} />
         <div
           style={{
             display: "flex",
@@ -89,36 +145,58 @@ const BasketCard = ({ setTotalPrice, id }) => {
             justifyContent: "space-between",
           }}
         >
-          <p style={{ margin: "0", fontSize: "15px" }}>{basket.title}</p>
+          <p style={{ margin: "0", fontSize: "15px" }}>{product.productName}</p>
 
           <h3 style={{ margin: "10px 0", fontSize: "16px" }}>
-            {priceToString(basket.price)}원
+            {priceToString(product.quantityPrice)} 원
           </h3>
-
-          {/* <div style={{ display: "flex", alignItems: "center" }}> */}
-          {basket.toggle ? (
+          {toggle ? (
             <div style={{ display: "flex", alignItems: "center" }}>
               <StCheckIcon
-                onClick={() => subCountWithSum()}
                 bgPosition="-620px -220px"
+                onClick={() =>
+                  reduceAmountWithPrice({
+                    productId: product.productId,
+                    amount: product.amount,
+                    price: product.quantityPrice,
+                  })
+                }
               ></StCheckIcon>
-              <StNumInput value={basket.num} disabled />
+              <StNumInput value={product.amount} disabled />
               <StCheckIcon
-                onClick={() => addCountWithSum()}
                 bgPosition="-590px -220px"
+                onClick={() =>
+                  increaseAmountWithPrice({
+                    productId: product.productId,
+                    amount: product.amount,
+                    price: product.quantityPrice,
+                  })
+                }
               ></StCheckIcon>
+              {/* <StCheckIcon bgPosition="-560px -220px"></StCheckIcon> */}
             </div>
           ) : (
             <div style={{ display: "flex", alignItems: "center" }}>
               <StCheckIcon
-                onClick={() => subCountOnly()}
                 bgPosition="-620px -220px"
+                onClick={() =>
+                  reduceAmount({
+                    productId: product.productId,
+                    amount: product.amount,
+                  })
+                }
               ></StCheckIcon>
-              <StNumInput value={basket.num} disabled />
+              <StNumInput value={product.amount} disabled />
               <StCheckIcon
-                onClick={() => addCountOnly()}
                 bgPosition="-590px -220px"
+                onClick={() =>
+                  increaseAmount({
+                    productId: product.productId,
+                    amount: product.amount,
+                  })
+                }
               ></StCheckIcon>
+              {/* <StCheckIcon bgPosition="-560px -220px"></StCheckIcon> */}
             </div>
           )}
         </div>

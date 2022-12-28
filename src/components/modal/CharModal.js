@@ -26,9 +26,20 @@ const OVERLAY_STYLE = {
 export default function Modal({ product, fetchData }) {
   const [open, setOpen] = useState(false);
 
+  const accesstoken = localStorage.getItem("accesstoken");
+  const refreshtoken = localStorage.getItem("refreshtoken");
+
   const onClickConfirmHandler = async (productId) => {
+    console.log(productId);
     await axios.put(
-      `https://dev.kimmand0o0.shop/api/users/carts/delete/${productId}`
+      `https://dev.kimmand0o0.shop/api/users/carts/delete/${productId}`,
+      {},
+      {
+        headers: {
+          accesstoken: accesstoken,
+          refreshtoken: refreshtoken,
+        },
+      }
     );
     fetchData();
   };

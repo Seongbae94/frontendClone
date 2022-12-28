@@ -1,271 +1,377 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import BasketCard from "../components/sub/BasketCard";
 import { priceToString } from "../components/sub/utils/PriceToString";
-import {
-  autoToggleAllTrue,
-  autoToggleAllFalse,
-} from "../redux/modules/basketSlice";
 import axios from "axios";
-import Modal from "../components/modal/Modal";
 
 const Orderbasket = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const [carts, setCarts] = useState();
   const [totalPrice, setTotalPrice] = useState(0);
   const deliveryFee = 3000;
-  const dispatch = useDispatch();
-  // const products = useSelector((store) => store.basket.dummyInfo);
-  const products = useSelector((store) => store.basket.carts);
-  const { count } = useSelector((store) => store.basket);
-  const toggle = useSelector((store) => store.basket.toggle);
 
-  const Clicked = () => {
-    //carts에 있는 값 모두 false로 변경후 eachTotalPrice 업데이트 하지 않음.
-    dispatch(autoToggleAllFalse());
-  };
-
-  const noClicked = () => {
-    //carts에 있는 값 모두 true로 변경후 eachTotalPrice 업데이트
-    //장바구니에 있는 물품들은 전부 basketSlice carts안에 이미 들어가 있기 때문에 eachTotalPrice만 업데이트
-    //해주면 BasketCard에서 값들을 더해줌.
-    dispatch(autoToggleAllTrue());
-  };
-
-  console.log(carts);
+  const accesstoken = localStorage.getItem("accesstoken");
+  const refreshtoken = localStorage.getItem("refreshtoken");
 
   const fetchData = async () => {
     const { data } = await axios.get(
-      "https://dev.kimmand0o0.shop/api/users/carts"
+      "https://dev.kimmand0o0.shop/api/users/carts",
+      {
+        headers: {
+          accesstoken: accesstoken,
+          refreshtoken: refreshtoken,
+        },
+      }
     );
     //유저아이디가 2일 때 정보 저장.
     setCarts(data.Carts.products);
-    // console.log(data.Carts);
   };
 
-  console.log(carts);
   useEffect(() => {
     fetchData();
   }, []);
 
-  const onClickCancelHandler = () => {
-    setIsOpen(false);
+  const priceGroup = [];
+  let priceTotal = 0;
+  carts && carts.map((cart) => priceGroup.push(cart.quantityPrice));
+  if (priceGroup.length !== 0) {
+    priceTotal = priceGroup.reduce((a, b) => a + b);
+  }
+
+  const [toggle, setToggle] = useState(true);
+  const [click, setClick] = useState(true);
+  const [count, setCount] = useState(0);
+
+  const toggleAll = () => {
+    setClick(true);
+    setTotalPrice(priceTotal);
+    setCount(carts.length);
   };
 
-  const removeFromBasket = () => {
-    setIsOpen(true);
+  const untoggleAll = () => {
+    setClick(false);
+    setTotalPrice(0);
+    setCount(0);
   };
 
-  const reduceAmount = async ({ productId, amount }) => {
-    // console.log(productId, amount);
-    // const reducedAmount = amount - 1;
-    await axios.put(
-      `https://dev.kimmand0o0.shop/api/users/carts/${productId}`,
+  const purchaseItems = async () => {
+    await axios.post(
+      "https://dev.kimmand0o0.shop/api/users/orderLists",
+      {},
       {
-        amount: amount - 1,
+        headers: {
+          accesstoken: accesstoken,
+          refreshtoken: refreshtoken,
+        },
       }
     );
     fetchData();
-  };
-
-  const increaseAmount = async ({ productId, amount }) => {
-    await axios.put(
-      `https://dev.kimmand0o0.shop/api/users/carts/${productId}`,
-      {
-        amount: amount + 1,
-      }
-    );
-    fetchData();
+    setToggle(false);
+    setCount(0);
+    alert("구매가 완료되었습니다");
   };
 
   return (
-    <StContainer>
-      {totalPrice >= 30000 ? (
-        <div className="headerFont" style={{ color: "#ff447f" }}>
-          무료배송
-        </div>
-      ) : totalPrice < 30000 && totalPrice > 0 ? (
-        <div style={{ marginBottom: "10px", fontWeight: "bold" }}>
-          <span className="headerFont" style={{ color: "#ff447f" }}>
-            {priceToString(30000 - totalPrice)}
-          </span>
-          <span>원 추가시 무료배송</span>
-        </div>
-      ) : totalPrice === 0 ? (
-        <div className="headerFont">3만원 이상 구매시 무료배송</div>
-      ) : null}
-
-      <StGaugeBar>
-        {totalPrice ? (
-          <div
-            className="percent"
-            style={{
-              width: `${
-                (totalPrice / 30000) * 100 >= 100
-                  ? 100
-                  : (totalPrice / 30000) * 100
-              }%`,
-            }}
-          >
-            <div className="circle-move">
-              <StGuage>
-                <StGuagesm></StGuagesm>
-              </StGuage>
+    <div>
+      {carts && carts.length !== 0 ? (
+        <StContainer>
+          {totalPrice >= 30000 ? (
+            <div className="headerFont" style={{ color: "#ff447f" }}>
+              무료배송
             </div>
-          </div>
-        ) : (
-          <div
-            className="percent"
-            style={{
-              width: "0%",
-            }}
-          >
-            <div className="circle-move">
-              <StGuage bgColor="#eee">
-                <StGuagesm animation="none"></StGuagesm>
-              </StGuage>
+          ) : totalPrice < 30000 && totalPrice > 0 ? (
+            <div style={{ marginBottom: "10px", fontWeight: "bold" }}>
+              <span className="headerFont" style={{ color: "#ff447f" }}>
+                {priceToString(30000 - totalPrice)}
+              </span>
+              <span>원 추가시 무료배송</span>
             </div>
-          </div>
-        )}
-      </StGaugeBar>
+          ) : totalPrice === 0 ? (
+            <div className="headerFont">3만원 이상 구매시 무료배송</div>
+          ) : null}
 
-      <StTopButton>
-        {toggle ? (
-          <StCheckIcon onClick={Clicked}></StCheckIcon>
-        ) : (
-          <StCheckIcon
-            bgPosition="-160px -220px"
-            onClick={noClicked}
-          ></StCheckIcon>
-        )}
-        <div style={{ fontSize: "14px" }}>
-          전체<span style={{ fontWeight: "bold" }}>{count}</span>
-        </div>
-      </StTopButton>
-
-      <StBorder></StBorder>
-
-      {carts &&
-        carts.map((product) => {
-          return (
-            // <div key={product.id}>
-            //   <BasketCard
-            //     product={product}
-            //     toggle={toggle}
-            //     setTotalPrice={setTotalPrice}
-            //   />
-            // </div>
-            <div key={product.productId}>
-              <StCard>
-                <StCloseIcon
-                  style={{
-                    position: "absolute",
-                    right: "0",
-                  }}
-                  onClick={() => removeFromBasket(product.id)}
-                ></StCloseIcon>
-                <Modal onClose={() => setIsOpen(false)} open={isOpen}>
-                  <StModalStyle>
-                    <p>선택하신 상품을 삭제하시겠습니까?</p>
-                    <div>
-                      <button onClick={onClickCancelHandler}>취소</button>
-                      <button>확인</button>
-                    </div>
-                  </StModalStyle>
-                </Modal>
-                <StCheckIcon></StCheckIcon>
-                {/* <StCheckIcon bgPosition="-160px -220px"></StCheckIcon> */}
-                <img src={require("../amu.png")} />
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <p style={{ margin: "0", fontSize: "15px" }}>깡총깡총인형</p>
-
-                  <h3 style={{ margin: "10px 0", fontSize: "16px" }}>3000원</h3>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <StCheckIcon
-                      bgPosition="-620px -220px"
-                      onClick={() =>
-                        reduceAmount({
-                          productId: product.productId,
-                          amount: product.amount,
-                        })
-                      }
-                    ></StCheckIcon>
-                    <StNumInput value={product.amount} disabled />
-                    <StCheckIcon
-                      bgPosition="-590px -220px"
-                      onClick={() =>
-                        increaseAmount({
-                          productId: product.productId,
-                          amount: product.amount,
-                        })
-                      }
-                    ></StCheckIcon>
-                    {/* <StCheckIcon bgPosition="-560px -220px"></StCheckIcon> */}
-                  </div>
+          <StGaugeBar>
+            {totalPrice ? (
+              <div
+                className="percent"
+                style={{
+                  width: `${
+                    (totalPrice / 30000) * 100 >= 100
+                      ? 100
+                      : (totalPrice / 30000) * 100
+                  }%`,
+                }}
+              >
+                <div className="circle-move">
+                  <StGuage>
+                    <StGuagesm></StGuagesm>
+                  </StGuage>
                 </div>
-              </StCard>
-              <StBorder height="1px"></StBorder>
+              </div>
+            ) : (
+              <div
+                className="percent"
+                style={{
+                  width: "0%",
+                }}
+              >
+                <div className="circle-move">
+                  <StGuage bgColor="#eee">
+                    <StGuagesm animation="none"></StGuagesm>
+                  </StGuage>
+                </div>
+              </div>
+            )}
+          </StGaugeBar>
+
+          <StTopButton>
+            {toggle ? (
+              <StCheckIcon onClick={untoggleAll}></StCheckIcon>
+            ) : (
+              <StCheckIcon
+                onClick={toggleAll}
+                bgPosition="-160px -220px"
+              ></StCheckIcon>
+            )}
+            <div style={{ fontSize: "14px" }}>
+              전체<span style={{ fontWeight: "bold" }}>{count}</span>
             </div>
-          );
-        })}
+          </StTopButton>
 
-      <div
-        style={{
-          marginTop: "20px",
-        }}
-      >
-        <StProductPrice>
-          <p>상품금액</p>
-          <p>{priceToString(totalPrice)}원</p>
-        </StProductPrice>
-        {totalPrice >= 30000 ? (
-          <StProductPrice>
-            <p>배송비</p>
-            <p>무료</p>
-          </StProductPrice>
-        ) : (
-          <StProductPrice>
-            <p>배송비</p>
-            <p>{priceToString(deliveryFee)}원</p>
-          </StProductPrice>
-        )}
+          <StBorder></StBorder>
 
-        {totalPrice >= 30000 ? (
-          <StProductPrice>
-            <p style={{ fontWeight: "bold" }}>총 결제금액</p>
-            <p style={{ fontWeight: "bold" }}>{priceToString(totalPrice)}원</p>
-          </StProductPrice>
-        ) : (
-          <StProductPrice>
-            <p style={{ fontWeight: "bold" }}>총 결제금액</p>
-            <p style={{ fontWeight: "bold" }}>
-              {priceToString(deliveryFee + totalPrice)}원
+          {carts &&
+            carts.map((product) => {
+              return (
+                <div key={product.productId}>
+                  <BasketCard
+                    product={product}
+                    // setTotalPrice={setTotalPrice}
+                    fetchData={fetchData}
+                    priceTotal={priceTotal}
+                    setTotalPrice={setTotalPrice}
+                    toggleParent={toggle}
+                    setCount={setCount}
+                    carts={carts}
+                    setToggleParent={setToggle}
+                    count={count}
+                    click={click}
+                  />
+                </div>
+              );
+            })}
+
+          <div
+            style={{
+              marginTop: "20px",
+            }}
+          >
+            <StProductPrice>
+              <p>상품금액</p>
+              <p>{priceToString(totalPrice)}원</p>
+            </StProductPrice>
+            {totalPrice >= 30000 ? (
+              <StProductPrice>
+                <p>배송비</p>
+                <p>무료</p>
+              </StProductPrice>
+            ) : (
+              <StProductPrice>
+                <p>배송비</p>
+                <p>{priceToString(deliveryFee)}원</p>
+              </StProductPrice>
+            )}
+
+            {totalPrice >= 30000 ? (
+              <StProductPrice>
+                <p style={{ fontWeight: "bold" }}>총 결제금액</p>
+                <p style={{ fontWeight: "bold" }}>
+                  {priceToString(totalPrice)}원
+                </p>
+              </StProductPrice>
+            ) : (
+              <StProductPrice>
+                <p style={{ fontWeight: "bold" }}>총 결제금액</p>
+                <p style={{ fontWeight: "bold" }}>
+                  {priceToString(deliveryFee + totalPrice)}원
+                </p>
+              </StProductPrice>
+            )}
+
+            <p
+              style={{
+                fontSize: "13px",
+                padding: "0 10px",
+                color: "#aeaeaf",
+              }}
+            >
+              장바구니 상품은 최대 90일까지 보관됩니다.
             </p>
-          </StProductPrice>
-        )}
-
-        <p
+          </div>
+        </StContainer>
+      ) : (
+        <div
           style={{
-            fontSize: "13px",
-            padding: "0 10px",
-            color: "#aeaeaf",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "576px",
           }}
         >
-          장바구니 상품은 최대 90일까지 보관됩니다.
-        </p>
-      </div>
-    </StContainer>
+          <img
+            style={{ width: "192px", height: "192px" }}
+            src={
+              "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221228/112611/assets/images/m960/ico_cart_empty.png"
+            }
+          />
+          <p style={{ margin: "0 0 5px 0", color: "#aeaeaf" }}>
+            아직 관심 상품이 없네요
+          </p>
+          <p style={{ margin: "0", color: "#aeaeaf" }}>
+            귀여운 프렌즈 상품을 추천드릴게요
+          </p>
+        </div>
+      )}
+
+      <BuyButton onClick={purchaseItems} position="fixed" left="50%">
+        구매하기
+      </BuyButton>
+    </div>
   );
 };
 
 export default Orderbasket;
+
+const ControlBtn = styled.button`
+  position: absolute;
+  top: 6px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background-color: white;
+  cursor: ${({ set }) => (set === "disable" ? "auto" : "pointer")};
+  background-image: url("https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/ico_friends.png");
+  background-size: 700px 1000px;
+  background-position: ${({ value, set }) => {
+    if (value === "plus") {
+      return "-590px -220px";
+    } else if (value === "minus") {
+      if (set === "Active") {
+        return "-560px -220px";
+      } else {
+        return "-620px -220px";
+      }
+    }
+  }};
+  ${({ value }) => {
+    if (value === "plus") {
+      return "right : 0";
+    } else {
+      return "left : 0";
+    }
+  }}
+`;
+
+const BuyModalWrap = styled.div`
+  display: ${({ modalActive }) => (modalActive ? "block" : "none")};
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1500;
+  width: 100%;
+  height: 100%;
+  .bg {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  .Modal {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    z-index: 1000;
+    transform: translateX(-50%);
+    padding-top: 32px;
+    background-color: white;
+    border-radius: 10px 10px 0 0;
+  }
+  .numberSelect {
+    padding: 0 20px 20px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .selectTitle {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: bold;
+  }
+  .contrilWrap {
+    padding: 0 28px;
+    position: relative;
+    border-bottom: 1px solid #eff0f2;
+  }
+  input {
+    width: 26px;
+    height: 100%;
+    font-size: 14px;
+    text-align: center;
+    padding: 8px 15px;
+    border: 1px solid #dedfe0;
+    border-radius: 8px;
+    line-height: 20px;
+  }
+  .totalPriceWrap {
+    padding: 0 21px 0 20px;
+    height: 66px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .totalPriceMenu {
+    font-size: 14px;
+    line-height: 16px;
+    color: #747475;
+  }
+  .totalPrice {
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: bold;
+  }
+  i {
+    position: absolute;
+    cursor: pointer;
+    right: 20px;
+    bottom: 15px;
+    transform: translate(0, -50%);
+    background-position: -280px -21px;
+    width: 24px;
+    height: 24px;
+    background-image: url("https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/ico_friends.png");
+    background-size: 700px 1000px;
+  }
+`;
+
+const BuyButton = styled.div`
+  position: ${({ position }) => position};
+  left: ${({ left }) => left};
+  bottom: 0;
+  transform: ${({ left }) =>
+    left === "50%" ? "translateX(-50%)" : "translateX(0)"};
+  width: 640px;
+  height: 80px;
+  background-color: #fb2e45;
+  z-index: 1000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+`;
 
 const StCard = styled.div`
   display: flex;
