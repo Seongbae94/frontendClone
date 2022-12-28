@@ -1,19 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const MyPageLayout = () => {
-  const [clickedBasket, setClickedBasket] = useState(true);
+  const [clickedBasket, setClickedBasket] = useState(false);
   const [clickedOrderList, setClickedOrderList] = useState(false);
   const navigate = useNavigate();
+  const { pathname } = useSelector((store) => store.routes.route);
 
-  const orderlist = (list) => {
+  useEffect(() => {
+    if (pathname === "/mypage/basket") {
+      setClickedBasket(true);
+      setClickedOrderList(false);
+    } else {
+      setClickedOrderList(true);
+      setClickedBasket(false);
+    }
+  }, [pathname]);
+
+  const orderlist = () => {
     navigate("/mypage/orderlist");
     setClickedOrderList(true);
     setClickedBasket(false);
   };
 
-  const basket = (list) => {
+  const basket = () => {
     navigate("/mypage/basket");
     setClickedBasket(true);
     setClickedOrderList(false);
