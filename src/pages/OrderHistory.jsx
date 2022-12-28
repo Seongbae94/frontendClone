@@ -3,16 +3,22 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const OrderHistory = () => {
-  const [orderlist, setOrderlist] = useState({});
+  const [orderlist, setOrderlist] = useState([]);
+  const accesstoken = localStorage.getItem("accesstoken");
+  const refreshtoken = localStorage.getItem("refreshtoken");
 
   const fetchData = async () => {
     const { data } = await axios.get(
-      "https://dev.kimmand0o0.shop/api/users/orderLists"
+      "https://dev.kimmand0o0.shop/api/users/orderLists",
+      {
+        headers: {
+          accesstoken: accesstoken,
+          refreshtoken: refreshtoken,
+        },
+      }
     );
     //유저아이디가 1인 정보를 저장한다.
-    data.OrderLists.map((list) =>
-      list.userId === 1 ? setOrderlist(list) : setOrderlist({})
-    );
+    setOrderlist(data.OrderLists);
   };
 
   useEffect(() => {
@@ -22,63 +28,40 @@ const OrderHistory = () => {
   return (
     <StContainer>
       <StCards>
-        {orderlist.products &&
-          orderlist.products.map((product) => {
+        {orderlist &&
+          orderlist.reverse().map((products) => {
+            const day = products.createdAt;
+            const splited = day.split("T");
+
             return (
-              <StCard key={product.productId}>
-                <h1>order</h1>
-                <StCombinedBg>
-                  <StBg>
-                    <img src={require("../amu.png")} />
-                    <div className="contents">
-                      <p>춘식이 허그 목쿠션 x {product.amount}</p>
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <StIcon className="icon"></StIcon>
-                        <p>구매확정</p>
-                      </div>
-                    </div>
-                  </StBg>
-                  <StCircleL></StCircleL>
-                  <StCircleR></StCircleR>
-                </StCombinedBg>
+              <StCard key={products.orderListId}>
+                <h1>{splited[0]}</h1>
+                {products.products.map((product) => {
+                  return (
+                    <StCombinedBg key={product.productId}>
+                      <StBg>
+                        <img src={product.imageUrl} />
+                        <div className="contents">
+                          <p>
+                            {product.productName} x {product.amount}
+                          </p>
+                          {/* <p>{product.quantityPrice}</p> */}
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <StIcon className="icon"></StIcon>
+                            <p>구매확정</p>
+                          </div>
+                        </div>
+                      </StBg>
+                      <StCircleL></StCircleL>
+                      <StCircleR></StCircleR>
+                    </StCombinedBg>
+                  );
+                })}
               </StCard>
             );
           })}
-
-        <StCard>
-          <h1>2022.10.20</h1>
-          <StCombinedBg>
-            <StBg>
-              <img src={require("../amu.png")} />
-              <div className="contents">
-                <p>춘식이 허그 목쿠션</p>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <StIcon className="icon"></StIcon>
-                  <p>구매확정</p>
-                </div>
-              </div>
-            </StBg>
-            <StCircleL></StCircleL>
-            <StCircleR></StCircleR>
-          </StCombinedBg>
-        </StCard>
-        <StCard>
-          <h1>2022.10.20</h1>
-          <StCombinedBg>
-            <StBg>
-              <img src={require("../amu.png")} />
-              <div className="contents">
-                <p>춘식이 허그 목쿠션</p>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <StIcon className="icon"></StIcon>
-                  <p>구매확정</p>
-                </div>
-              </div>
-            </StBg>
-            <StCircleL></StCircleL>
-            <StCircleR></StCircleR>
-          </StCombinedBg>
-        </StCard>
       </StCards>
       <ul>
         <li style={{ margin: "30px 0 0 0" }}>
@@ -172,6 +155,7 @@ const StCircleR = styled.div`
 
 const StCombinedBg = styled.div`
   position: relative;
+  margin-bottom: 10px;
 `;
 
 const StIcon = styled.div`
