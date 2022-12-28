@@ -45,7 +45,7 @@ function App() {
       (async () => {
         try {
           const data = await axios.get(
-            `${process.env.REACT_APP_URL}/api/login/kakao?code=${code}`
+            `${process.env.REACT_APP_URL}/api/login/kakao?codetype=${process.env.NODE_ENV}&code=${code}`
           );
 
           localStorage.setItem("accesstoken", data.headers.accesstoken);
@@ -69,7 +69,6 @@ function App() {
       dispatch(setLogin(false));
     }
   }, [nowRoute]);
-
   // ----------------------------------------------------------
   return (
     <Layout>
