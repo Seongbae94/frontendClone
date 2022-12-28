@@ -31,7 +31,7 @@ const OrderHistory = () => {
         <StContainer>
           <StCards>
             {orderlist &&
-              orderlist.reverse().map((products) => {
+              orderlist.map((products) => {
                 const day = products.createdAt;
                 const splited = day.split("T");
 

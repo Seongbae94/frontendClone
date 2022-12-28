@@ -93,10 +93,18 @@ const CharacterPage = () => {
                 />
                 <h1>{charInfo.nameEng}</h1>
                 <p>{charInfo.title}</p>
-                <span>{charInfo.modalDesc1}</span>
-                <span>{charInfo.modalDesc2}</span>
-                <span>{charInfo.modalDesc3}</span>
-                {charInfo.modalDesc4}
+                <StFlex
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    margin: "0",
+                  }}
+                >
+                  <span>{charInfo.modalDesc1}</span>
+                  <span>{charInfo.modalDesc2}</span>
+                  <span>{charInfo.modalDesc3}</span>
+                  <span>{charInfo.modalDesc4}</span>
+                </StFlex>
               </StModalStyle>
             </Modal>
           </div>
@@ -127,6 +135,12 @@ const CharacterPage = () => {
 
 export default CharacterPage;
 
+const StFlex = styled.div`
+  span {
+    margin: 5px 0 0 0;
+  }
+`;
+
 const StModalStyle = styled.div`
   width: 280px;
   /* height: 363px; */
@@ -139,7 +153,7 @@ const StModalStyle = styled.div`
   justify-content: center;
   align-items: center;
 
-  padding: 90px 15px 50px 15px;
+  padding: 90px 15px 40px 15px;
 
   position: relative;
 
