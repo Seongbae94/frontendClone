@@ -9,11 +9,11 @@ const BasketCard = ({
   product,
   priceTotal,
   setTotalPrice,
-  toggleParent,
   setCount,
   carts,
   count,
   click,
+  setClick,
   setToggleParent,
 }) => {
   const [toggle, setToggle] = useState(true);
