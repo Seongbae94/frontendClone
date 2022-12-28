@@ -11,22 +11,36 @@ const CharacterPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [charProducts, setCharProducts] = useState([]);
   const [cartProducts, setCartProducts] = useState([]);
-  const [sameId, setSameId] = useState([]);
   const { id } = useParams();
   //charInfo = 모달 캐릭터 정보 - hard code라 안 건드려도 됌
   const charInfo = charInfos.character.find((char) => char.id === +id);
   const charName = charInfo.uniqueName;
 
+  const accesstoken = localStorage.getItem("accesstoken");
+  const refreshtoken = localStorage.getItem("refreshtoken");
+
   const fetchCharData = async () => {
     const { data } = await axios.get(
-      `https://dev.kimmand0o0.shop/api/products/characters/${charName}`
+      `https://dev.kimmand0o0.shop/api/products/characters/${charName}`,
+      {
+        headers: {
+          accesstoken: accesstoken,
+          refreshtoken: refreshtoken,
+        },
+      }
     );
     setCharProducts(data.products);
   };
 
   const fetchCartData = async () => {
     const { data } = await axios.get(
-      "https://dev.kimmand0o0.shop/api/users/carts"
+      "https://dev.kimmand0o0.shop/api/users/carts",
+      {
+        headers: {
+          accesstoken: accesstoken,
+          refreshtoken: refreshtoken,
+        },
+      }
     );
     setCartProducts(data.Carts);
   };
@@ -46,10 +60,6 @@ const CharacterPage = () => {
   };
   useEffect(() => {}, [charProducts, cartProducts]);
 
-  // useEffect(() => {
-  //   fetchCartData();
-  // }, [charName]);
-
   //캐릭터 페이지에서 productId 모음
   const productIdGroup = [];
   charProducts?.map((product) => productIdGroup.push(product.productId));
@@ -58,11 +68,9 @@ const CharacterPage = () => {
   const includeGroup = [];
   cartProducts?.products?.map((product) =>
     productIdGroup.includes(product.productId)
-      ? setSameId((prev) => [...prev, product.productId])
+      ? includeGroup.push(product.productId)
       : null
   );
-
-  console.log(sameId);
 
   return (
     <StContainer>
@@ -107,7 +115,7 @@ const CharacterPage = () => {
             <CharProductCard
               key={product.productId}
               product={product}
-              fetchCharData={fetchCharData}
+              fetchCartData={fetchCartData}
               includeGroup={includeGroup}
             />
           );

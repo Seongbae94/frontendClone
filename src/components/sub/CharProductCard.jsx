@@ -1,17 +1,41 @@
-import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const CharProductCard = ({ product, fetchData }) => {
-  const [clicked, setClicked] = useState(false);
+const CharProductCard = ({ product, fetchCartData, includeGroup }) => {
+  const accesstoken = localStorage.getItem("accesstoken");
+  const refreshtoken = localStorage.getItem("refreshtoken");
 
-  const addToBasket = async () => {
-    setClicked(true);
-    // await axios.post(`https://dev.kimmand0o0.shop/api/users/carts`, {
-    //   productId: product.productId,
-    //   amount: 1,
-    // });
-    // fetchData();
+  const notify = () => {
+    toast.success("장바구니에 담겼습니다", {
+      position: "bottom-center",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+  };
+
+  const addToBasket = async (productId) => {
+    await axios.post(
+      `https://dev.kimmand0o0.shop/api/users/carts`,
+      {
+        productId: productId,
+        amount: 1,
+      },
+      {
+        headers: {
+          accesstoken: accesstoken,
+          refreshtoken: refreshtoken,
+        },
+      }
+    );
+    notify();
+    fetchCartData();
   };
 
   return (
@@ -19,17 +43,17 @@ const CharProductCard = ({ product, fetchData }) => {
       <img style={{ width: "100%" }} src={product.imageUrl} />
       <div className="flex">
         <p className="title">{product.productName}</p>
-        {clicked ? (
+        {includeGroup.includes(product.productId) ? (
           <StIcon
             location="-320px -220px"
-            onClick={() => addToBasket(product.id)}
+            onClick={() => addToBasket(product.productId)}
           ></StIcon>
         ) : (
-          <StIcon onClick={() => addToBasket(product.id)}></StIcon>
+          <StIcon onClick={() => addToBasket(product.productId)}></StIcon>
         )}
-        {/* <StIcon onClick={() => addToBasket(product.id)}></StIcon> */}
       </div>
       <p className="price">{product.productPrice}원</p>
+      <ToastContainer />
     </StProduct>
   );
 };
