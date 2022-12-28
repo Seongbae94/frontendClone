@@ -23,7 +23,11 @@ const ExplainDropdown = ({ title, children }) => {
 };
 
 const ProductsPage = () => {
+  const accesstoken = localStorage.getItem("accesstoken");
+  const refreshtoken = localStorage.getItem("refreshtoken");
+
   const params = useParams().id;
+  const [count, setCount] = useState(1);
 
   const [modalActive, setModalActive] = useState(false);
 
@@ -31,21 +35,40 @@ const ProductsPage = () => {
   const ModalToggle = () => {
     setModalActive(!modalActive);
   };
-  const nowBuying = () => {
-    alert("구매 완료했습니다.");
+  const nowBuying = async (productId) => {
+    await axios.post(
+      `${process.env.REACT_APP_URL}/api/users/directorderlists`,
+      {
+        productId: productId,
+        amount: count,
+      },
+      {
+        headers: {
+          accesstoken: accesstoken,
+          refreshtoken: refreshtoken,
+        },
+      }
+    );
+    fetchData();
+    alert("구매 완료!");
+    ModalToggle();
   };
   const addBasket = () => {
     console.log("장바구니");
   };
 
+  const fetchData = async () => {
+    const { data } = await axios.get(
+      `${process.env.REACT_APP_URL}/api/products/${params}`
+    );
+    setProductData(data.products);
+  };
+
   useEffect(() => {
-    (async () => {
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_URL}/api/products/${params}`
-      );
-      setProductData(data.products);
-    })();
+    fetchData();
   }, []);
+
+  console.log(productData);
 
   return (
     <>
@@ -145,16 +168,29 @@ const ProductsPage = () => {
               <div className="numberSelect">
                 <div className="selectTitle">수량 선택</div>
                 <div className="contrilWrap">
-                  <ControlBtn value="plus"></ControlBtn>
-                  <ControlBtn value="minus" set="disable"></ControlBtn>
-                  <input disabled value={1} />
+                  <ControlBtn
+                    value="plus"
+                    onClick={() => setCount(count + 1)}
+                  ></ControlBtn>
+                  <ControlBtn
+                    value="minus"
+                    onClick={() =>
+                      count > 1 ? setCount(count - 1) : setCount(count)
+                    }
+                  ></ControlBtn>
+                  <input disabled value={count} />
                 </div>
               </div>
               <div className="totalPriceWrap">
                 <div className="totalPriceMenu">총 제품금액</div>
-                <div className="totalPrice">19,000원</div>
+                <div className="totalPrice">
+                  {productData.productPrice * count}
+                </div>
               </div>
-              <BuyButton onClick={nowBuying} position="static">
+              <BuyButton
+                onClick={() => nowBuying(productData.productId)}
+                position="static"
+              >
                 바로구매
               </BuyButton>
               <i onClick={addBasket}></i>
