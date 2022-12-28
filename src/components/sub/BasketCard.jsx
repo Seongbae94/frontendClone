@@ -11,12 +11,9 @@ const BasketCard = ({
   setTotalPrice,
   setCount,
   carts,
-  count,
-  click,
-  setClick,
-  setToggleParent,
+  handlerToggleChild,
 }) => {
-  const [toggle, setToggle] = useState(true);
+  const [toggle, setToggle] = useState(product.toggle);
 
   const accesstoken = localStorage.getItem("accesstoken");
   const refreshtoken = localStorage.getItem("refreshtoken");
@@ -26,16 +23,8 @@ const BasketCard = ({
   }, []);
 
   useEffect(() => {
-    if (carts.length === count) {
-      setToggleParent(true);
-    } else {
-      setToggleParent(false);
-    }
-  }, [count]);
-
-  useEffect(() => {
-    setToggle(click);
-  }, [click]);
+    setToggle(product.toggle);
+  }, [product.toggle]);
 
   useEffect(() => {
     setCount(carts.length);
@@ -111,14 +100,16 @@ const BasketCard = ({
     setTotalPrice((prev) => prev + price / amount);
   };
 
-  const removePrice = (productPrice) => {
-    setToggle(false);
+  const removePrice = (productPrice, productId) => {
+    handlerToggleChild(productId);
+    setToggle(product.toggle);
     setTotalPrice((prev) => prev - productPrice);
     setCount((prev) => prev - 1);
   };
 
-  const addPrice = (productPrice) => {
-    setToggle(true);
+  const addPrice = (productPrice, productId) => {
+    handlerToggleChild(productId);
+    setToggle(product.toggle);
     setTotalPrice((prev) => prev + productPrice);
     setCount((prev) => prev + 1);
   };
@@ -129,11 +120,13 @@ const BasketCard = ({
         <CharModal fetchData={fetchData} product={product}></CharModal>
         {toggle ? (
           <StCheckIcon
-            onClick={() => removePrice(product.quantityPrice)}
+            onClick={() =>
+              removePrice(product.quantityPrice, product.productId)
+            }
           ></StCheckIcon>
         ) : (
           <StCheckIcon
-            onClick={() => addPrice(product.quantityPrice)}
+            onClick={() => addPrice(product.quantityPrice, product.productId)}
             bgPosition="-160px -220px"
           ></StCheckIcon>
         )}
