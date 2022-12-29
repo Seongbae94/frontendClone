@@ -37,25 +37,27 @@ const ProductsPage = () => {
     setModalActive(!modalActive);
   };
   const nowBuying = async (productId) => {
-    await axios.post(
-      `${process.env.REACT_APP_URL}/api/users/directorderlists`,
-      {
-        productId: productId,
-        amount: count,
-      },
-      {
-        headers: {
-          accesstoken: accesstoken,
-          refreshtoken: refreshtoken,
+    const getTokken = localStorage.getItem("refreshtoken");
+    if (!getTokken) {
+      alert("로그인 후 사용 가능합니다.");
+    } else {
+      await axios.post(
+        `${process.env.REACT_APP_URL}/api/users/directorderlists`,
+        {
+          productId: productId,
+          amount: count,
         },
-      }
-    );
-    fetchData();
-    alert("구매 완료!");
-    ModalToggle();
-  };
-  const addBasket = () => {
-    console.log("장바구니");
+        {
+          headers: {
+            accesstoken: accesstoken,
+            refreshtoken: refreshtoken,
+          },
+        }
+      );
+      fetchData();
+      alert("구매 완료!");
+      ModalToggle();
+    }
   };
 
   const fetchData = async () => {
@@ -201,7 +203,6 @@ const ProductsPage = () => {
               >
                 바로구매
               </BuyButton>
-              {/* <i onClick={addBasket}></i> */}
             </div>
           </BuyModalWrap>
         </>

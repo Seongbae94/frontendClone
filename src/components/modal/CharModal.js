@@ -30,7 +30,6 @@ export default function Modal({
   totalPrice,
 }) {
   const [open, setOpen] = useState(false);
-  console.log(product);
 
   const accesstoken = localStorage.getItem("accesstoken");
   const refreshtoken = localStorage.getItem("refreshtoken");

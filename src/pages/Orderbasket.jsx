@@ -3,11 +3,14 @@ import styled from "styled-components";
 import BasketCard from "../components/sub/BasketCard";
 import { priceToString } from "../components/sub/utils/PriceToString";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Orderbasket = () => {
   const [carts, setCarts] = useState();
   const [totalPrice, setTotalPrice] = useState(0);
   const deliveryFee = 3000;
+
+  const navigate = useNavigate();
 
   const accesstoken = localStorage.getItem("accesstoken");
   const refreshtoken = localStorage.getItem("refreshtoken");
@@ -35,7 +38,10 @@ const Orderbasket = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    const token = localStorage.getItem("refreshtoken");
+    if (token) {
+      fetchData();
+    }
   }, []);
 
   const priceGroup = [];
@@ -78,12 +84,6 @@ const Orderbasket = () => {
         prev.productId === id ? { ...prev, toggle: !prev.toggle } : { ...prev }
       )
     );
-
-    // setCarts([
-    //   ...carts.slice(0, toggledCartIdx),
-    //   { ...carts[toggledCartIdx], toggle: !carts[toggledCartIdx].toggle },
-    //   ...carts.slice(toggledCartIdx + 1),
-    // ]);
   };
 
   const purchaseItems = async () => {
@@ -261,10 +261,11 @@ const Orderbasket = () => {
           </p>
         </div>
       )}
-
-      <BuyButton onClick={purchaseItems} position="fixed" left="50%">
-        구매하기
-      </BuyButton>
+      {localStorage.getItem("refreshtoken") ? (
+        <BuyButton onClick={purchaseItems} position="fixed" left="50%">
+          구매하기
+        </BuyButton>
+      ) : null}
     </div>
   );
 };

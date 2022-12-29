@@ -22,7 +22,10 @@ const OrderHistory = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    const token = localStorage.getItem("refreshtoken");
+    if (token) {
+      fetchData();
+    }
   }, []);
 
   return (

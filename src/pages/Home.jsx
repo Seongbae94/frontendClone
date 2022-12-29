@@ -58,7 +58,7 @@ const HomePage = () => {
   // -------------------------------------------------------
   const slideMoveWidth = 640;
   const slideTime = 5000;
-  const slideAnimationTime = 500;
+  const slideAnimationTime = 400;
 
   const [slideIdx, setSlideIdx] = useState(1);
   const [correntIdx, setCorrentIdx] = useState(2);
@@ -86,7 +86,7 @@ const HomePage = () => {
 
       setTimeout(() => {
         setBtnLoading(false);
-      }, slideAnimationTime + 500);
+      }, slideAnimationTime + 300);
     }
   };
 
@@ -108,7 +108,7 @@ const HomePage = () => {
 
       setTimeout(() => {
         setBtnLoading(false);
-      }, slideAnimationTime + 500);
+      }, slideAnimationTime + 300);
     }
   };
 
@@ -146,7 +146,7 @@ const HomePage = () => {
     return () => {
       clearInterval(loop);
     };
-  }, [slideIdx, moveX]);
+  }, [slideIdx, correntIdx, moveX, btnLoading]);
   // ----------------------------------------------------------
 
   const [TotalGoodsPage, setTotalGoodsPage] = useState(0);
