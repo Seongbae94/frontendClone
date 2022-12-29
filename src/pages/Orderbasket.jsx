@@ -46,7 +46,6 @@ const Orderbasket = () => {
   }
 
   const [toggle, setToggle] = useState(true);
-  const [count, setCount] = useState(0);
 
   // let filtered;
   useEffect(() => {
@@ -56,22 +55,20 @@ const Orderbasket = () => {
     } else {
       setToggle(false);
     }
-  }, [count]);
+  }, [carts]);
 
   const toggleAll = () => {
     setCarts((prev) => prev.map((prev) => ({ ...prev, toggle: true })));
     setTotalPrice(priceTotal);
-    setCount(carts.length);
   };
 
   const untoggleAll = () => {
     setCarts((prev) => prev.map((prev) => ({ ...prev, toggle: false })));
     setTotalPrice(0);
-    setCount(0);
   };
 
   const handlerToggleChild = (id) => {
-    const toggledCartIdx = carts.findIndex((d) => d.productId === id); // index 3
+    // const toggledCartIdx = carts.findIndex((d) => d.productId === id); // index 3
 
     setCarts((prev) =>
       prev.map((prev) =>
@@ -85,6 +82,8 @@ const Orderbasket = () => {
     //   ...carts.slice(toggledCartIdx + 1),
     // ]);
   };
+
+  const filtered = carts?.filter((cart) => cart.toggle === true);
 
   const purchaseItems = async () => {
     await axios.post(
@@ -164,7 +163,7 @@ const Orderbasket = () => {
               ></StCheckIcon>
             )}
             <div style={{ fontSize: "14px" }}>
-              전체<span style={{ fontWeight: "bold" }}>{count}</span>
+              전체<span style={{ fontWeight: "bold" }}>{filtered?.length}</span>
             </div>
           </StTopButton>
 
@@ -180,7 +179,6 @@ const Orderbasket = () => {
                     fetchData={fetchData}
                     priceTotal={priceTotal}
                     setTotalPrice={setTotalPrice}
-                    setCount={setCount}
                     carts={carts}
                     handlerToggleChild={handlerToggleChild}
                     totalPrice={totalPrice}

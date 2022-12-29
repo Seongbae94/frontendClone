@@ -29,9 +29,10 @@ export default function Modal({
   setTotalPrice,
   totalPrice,
   toggle,
+  setCarts,
+  carts,
 }) {
   const [open, setOpen] = useState(false);
-  console.log(product);
 
   const accesstoken = localStorage.getItem("accesstoken");
   const refreshtoken = localStorage.getItem("refreshtoken");
@@ -52,7 +53,24 @@ export default function Modal({
     } else {
       setTotalPrice(totalPrice);
     }
-    fetchData();
+
+    const { data } = await axios.get(
+      "https://dev.kimmand0o0.shop/api/users/carts",
+      {
+        headers: {
+          accesstoken: accesstoken,
+          refreshtoken: refreshtoken,
+        },
+      }
+    );
+
+    const convertedCartsByCheck = data?.Carts?.products?.map((item) => ({
+      ...item,
+      toggle: false,
+    }));
+
+    setCarts(convertedCartsByCheck);
+    setTotalPrice(0);
   };
 
   if (!open) {
