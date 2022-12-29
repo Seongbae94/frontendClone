@@ -31,6 +31,7 @@ function App() {
   const nowRoute = useSelector((state) => state.routes.route.pathname);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     //"/"로 진입 시 "/home"으로 리다이렉트
     if (nowRoute === "/") {
       navigate("/home");

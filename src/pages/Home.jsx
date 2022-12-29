@@ -240,6 +240,10 @@ const HomePage = () => {
       }
     })();
   }, []);
+
+  const gotoDetail = (id) => {
+    navigate(`/products/${id}`);
+  };
   // ----------------------------------------------------------
 
   return (
@@ -277,7 +281,13 @@ const HomePage = () => {
         <div className="listScreen">
           <div className="goodsLists">
             {charactorProducts.map((list) => (
-              <div key={list.productId} className="goodsList">
+              <div
+                key={list.productId}
+                className="goodsList"
+                onClick={() => {
+                  gotoDetail(list.productId);
+                }}
+              >
                 <div
                   className="goodsImg"
                   style={{ backgroundImage: `Url(${list.imageUrl})` }}

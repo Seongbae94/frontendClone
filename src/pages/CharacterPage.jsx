@@ -81,7 +81,7 @@ const CharacterPage = () => {
       <StHeader>
         <div className="mainImg">
           <div className="imgContainer">
-            <img className="charImg" src={charInfo.imageUrl} />
+            <img className="charImg" src={charInfo.bgImageUrl} />
             <img onClick={() => setIsOpen(true)} className="spreadImg" />
             <Modal onClose={() => setIsOpen(false)} open={isOpen}>
               <StModalStyle>
