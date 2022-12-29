@@ -2,8 +2,11 @@ import styled from "styled-components";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router";
 
 const CharProductCard = ({ product, fetchCartData, includeGroup }) => {
+  const navigate = useNavigate();
+
   const accesstoken = localStorage.getItem("accesstoken");
   const refreshtoken = localStorage.getItem("refreshtoken");
 
@@ -38,27 +41,41 @@ const CharProductCard = ({ product, fetchCartData, includeGroup }) => {
     fetchCartData();
   };
 
+  const gotoDetail = (id) => {
+    navigate(`/products/${id}`);
+  };
+
   return (
-    <StProduct key={product.productId}>
-      <img style={{ width: "100%" }} src={product.imageUrl} />
-      <div className="flex">
-        <p className="title">{product.productName}</p>
-        {includeGroup.includes(product.productId) ? (
-          <StIcon
-            location="-320px -220px"
-            onClick={() => addToBasket(product.productId)}
-          ></StIcon>
-        ) : (
-          <StIcon onClick={() => addToBasket(product.productId)}></StIcon>
-        )}
-      </div>
-      <p className="price">{product.productPrice}원</p>
-      <ToastContainer />
-    </StProduct>
+    <Wrap>
+      <StProduct
+        key={product.productId}
+        onClick={() => {
+          gotoDetail(product.productId);
+        }}
+      >
+        <img style={{ width: "100%" }} src={product.imageUrl} />
+        <div className="flex">
+          <p className="title">{product.productName}</p>
+        </div>
+        <p className="price">{product.productPrice}원</p>
+        <ToastContainer />
+      </StProduct>
+      {includeGroup.includes(product.productId) ? (
+        <StIcon
+          location="-320px -220px"
+          onClick={() => addToBasket(product.productId)}
+        ></StIcon>
+      ) : (
+        <StIcon onClick={() => addToBasket(product.productId)}></StIcon>
+      )}
+    </Wrap>
   );
 };
 
 export default CharProductCard;
+const Wrap = styled.div`
+  position: relative;
+`;
 
 const StProduct = styled.div`
   max-width: 188px;
@@ -74,6 +91,7 @@ const StProduct = styled.div`
   .title {
     color: #747475;
     margin: 0;
+    width: 160px;
   }
 
   .price {
@@ -87,8 +105,12 @@ const StProduct = styled.div`
 `;
 
 const StIcon = styled.div`
+  position: absolute;
+  right: 20px;
+  bottom: 80px;
   display: block;
   overflow: hidden;
+  cursor: pointer;
   font-size: 1px;
   line-height: 0;
   background: url("https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/ico_friends.png")
@@ -96,8 +118,8 @@ const StIcon = styled.div`
   background-size: 700px 1000px;
   color: transparent;
 
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   background-position: ${(prop) => prop.location || "-280px -220px"};
   margin: 0;
 `;

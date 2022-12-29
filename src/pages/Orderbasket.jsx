@@ -22,8 +22,16 @@ const Orderbasket = () => {
         },
       }
     );
-    //유저아이디가 2일 때 정보 저장.
-    setCarts(data.Carts.products);
+    if (data.Carts.products && data.Carts.products.length >= 1) {
+      const convertedCartsByCheck = data.Carts.products.map((item) => ({
+        ...item,
+        toggle: true,
+      }));
+
+      setCarts(convertedCartsByCheck);
+    } else {
+      setCarts([]);
+    }
   };
 
   useEffect(() => {
@@ -38,19 +46,44 @@ const Orderbasket = () => {
   }
 
   const [toggle, setToggle] = useState(true);
-  const [click, setClick] = useState(toggle);
   const [count, setCount] = useState(0);
 
+  // let filtered;
+  useEffect(() => {
+    const filtered = carts?.filter((cart) => cart.toggle === true);
+    if (filtered?.length === carts?.length) {
+      setToggle(true);
+    } else {
+      setToggle(false);
+    }
+  }, [count]);
+
   const toggleAll = () => {
-    setClick(true);
+    setCarts((prev) => prev.map((prev) => ({ ...prev, toggle: true })));
     setTotalPrice(priceTotal);
     setCount(carts.length);
   };
 
   const untoggleAll = () => {
-    setClick(false);
+    setCarts((prev) => prev.map((prev) => ({ ...prev, toggle: false })));
     setTotalPrice(0);
     setCount(0);
+  };
+
+  const handlerToggleChild = (id) => {
+    const toggledCartIdx = carts.findIndex((d) => d.productId === id); // index 3
+
+    setCarts((prev) =>
+      prev.map((prev) =>
+        prev.productId === id ? { ...prev, toggle: !prev.toggle } : { ...prev }
+      )
+    );
+
+    // setCarts([
+    //   ...carts.slice(0, toggledCartIdx),
+    //   { ...carts[toggledCartIdx], toggle: !carts[toggledCartIdx].toggle },
+    //   ...carts.slice(toggledCartIdx + 1),
+    // ]);
   };
 
   const purchaseItems = async () => {
@@ -64,10 +97,8 @@ const Orderbasket = () => {
         },
       }
     );
-    fetchData();
-    setToggle(false);
-    setCount(0);
     alert("구매가 완료되었습니다");
+    fetchData();
   };
 
   return (
@@ -148,13 +179,9 @@ const Orderbasket = () => {
                     fetchData={fetchData}
                     priceTotal={priceTotal}
                     setTotalPrice={setTotalPrice}
-                    toggleParent={toggle}
                     setCount={setCount}
                     carts={carts}
-                    setToggleParent={setToggle}
-                    count={count}
-                    click={click}
-                    setClick={setClick}
+                    handlerToggleChild={handlerToggleChild}
                   />
                 </div>
               );

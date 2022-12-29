@@ -1,13 +1,17 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 import styled from "styled-components";
 import { priceToString } from "../components/sub/utils/PriceToString";
 
 const BestPage = () => {
   const navigate = useNavigate();
-
+  const [cartProducts, setCartProducts] = useState([]);
   const [bestProducts, setBestProducts] = useState([]);
+
+  const accesstoken = localStorage.getItem("accesstoken");
+  const refreshtoken = localStorage.getItem("refreshtoken");
 
   useEffect(() => {
     (async () => {
@@ -16,15 +20,68 @@ const BestPage = () => {
       );
       setBestProducts(data.products);
     })();
+    fetchCartData();
   }, []);
 
-  const addBasket = () => {
-    console.log("hi");
+  const notify = () => {
+    toast.success("장바구니에 담겼습니다", {
+      position: "bottom-center",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+  };
+
+  const addBasket = async (productId) => {
+    await axios.post(
+      `https://dev.kimmand0o0.shop/api/users/carts`,
+      {
+        productId: productId,
+        amount: 1,
+      },
+      {
+        headers: {
+          accesstoken: accesstoken,
+          refreshtoken: refreshtoken,
+        },
+      }
+    );
+    notify();
+    fetchCartData();
   };
 
   const gotoDetail = (id) => {
     navigate(`/products/${id}`);
   };
+
+  const fetchCartData = async () => {
+    const { data } = await axios.get(
+      "https://dev.kimmand0o0.shop/api/users/carts",
+      {
+        headers: {
+          accesstoken: accesstoken,
+          refreshtoken: refreshtoken,
+        },
+      }
+    );
+    setCartProducts(data.Carts);
+  };
+
+  //베스트 페이지에서 productId 모음
+  const productIdGroup = [];
+  bestProducts?.map((product) => productIdGroup.push(product.productId));
+
+  //장바구니 페이지에서 productId
+  const includeGroup = [];
+  cartProducts?.products?.map((product) =>
+    productIdGroup.includes(product.productId)
+      ? includeGroup.push(product.productId)
+      : null
+  );
 
   return (
     <StContainer>
@@ -34,23 +91,36 @@ const BestPage = () => {
       </StPopular>
       <StCards>
         {bestProducts.slice(0, 50).map((list) => (
-          <StCard
-            onClick={() => {
-              gotoDetail(list.productId);
-            }}
-            key={list.productId}
-            rank={bestProducts.indexOf(list) + 1}
-          >
-            <p className="rank">{bestProducts.indexOf(list) + 1}</p>
-            <StCardImage src={list.imageUrl} />
-            <StFlexStrech>
-              <p className="card-title" mr="5px">
-                {list.productName}
-              </p>
-              <StBasketIcon onClick={addBasket}>장바구니 담기</StBasketIcon>
-            </StFlexStrech>
-            <p className="price">{priceToString(list.productPrice)}원</p>
-          </StCard>
+          <CardWrap key={list.productId}>
+            <StCard
+              onClick={() => {
+                gotoDetail(list.productId);
+              }}
+              rank={bestProducts.indexOf(list) + 1}
+            >
+              <p className="rank">{bestProducts.indexOf(list) + 1}</p>
+              <StCardImage src={list.imageUrl} />
+              <StFlexStrech>
+                <p className="card-title" mr="5px">
+                  {list.productName}
+                </p>
+              </StFlexStrech>
+              <ToastContainer />
+              <p className="price">{priceToString(list.productPrice)}원</p>
+            </StCard>
+            {includeGroup.includes(list.productId) ? (
+              <StBasketIcon
+                bgPosition="-320px -220px"
+                onClick={() => addBasket(list.productId)}
+              >
+                장바구니 담기
+              </StBasketIcon>
+            ) : (
+              <StBasketIcon onClick={() => addBasket(list.productId)}>
+                장바구니 담기
+              </StBasketIcon>
+            )}
+          </CardWrap>
         ))}
       </StCards>
     </StContainer>
@@ -102,6 +172,7 @@ const StFlexStrech = styled.div`
 `;
 
 const StCard = styled.div`
+  /* z-index: 0; */
   position: relative;
   border-radius: 10px;
   border-radius: 5px;
@@ -147,8 +218,15 @@ const StCard = styled.div`
     border-radius: 10px;
   }
 `;
+const CardWrap = styled.div`
+  position: relative;
+`;
 
 const StBasketIcon = styled.span`
+  position: absolute;
+  right: 0;
+  bottom: 50px;
+  /* z-index: 1; */
   display: block;
   overflow: hidden;
   font-size: 1px;

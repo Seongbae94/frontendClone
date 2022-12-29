@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import CaractorCategory from "../components/category/Category";
@@ -13,8 +12,8 @@ import { priceToString } from "../components/sub/utils/PriceToString";
 const HomePage = () => {
   const navigate = useNavigate();
   // -----------------------------------------------------
-  const gotoProducts = () => {
-    navigate("/products");
+  const gotoProducts = (id) => {
+    navigate(`/products/${id}`);
   };
 
   const sliderList = [
@@ -149,11 +148,10 @@ const HomePage = () => {
     };
   }, [slideIdx, moveX]);
   // ----------------------------------------------------------
-  const TotalGoodsPage = 3;
 
-  const moveLength = 90;
+  const [TotalGoodsPage, setTotalGoodsPage] = useState(0);
+  const [moveLength, setMoveLength] = useState(0);
 
-  // const moveLength = 370;
   const [nowGoodsPage, setNowGoodsPage] = useState(1);
   const [goodsMoveX, setGoodsMoveX] = useState(0);
 
@@ -161,7 +159,7 @@ const HomePage = () => {
   const [goodsRightBtn, setGoodsRightBtn] = useState("controlBtn right Active");
 
   const rightMove = () => {
-    if (nowGoodsPage < 3) {
+    if (nowGoodsPage < TotalGoodsPage) {
       setNowGoodsPage(nowGoodsPage + 1);
     }
   };
@@ -179,7 +177,7 @@ const HomePage = () => {
     if (nowGoodsPage === 1) {
       setGoodsLeftBtn("controlBtn left");
     }
-    if (nowGoodsPage === 3) {
+    if (nowGoodsPage === TotalGoodsPage) {
       setGoodsRightBtn("controlBtn right");
     }
   }, [nowGoodsPage]);
@@ -198,11 +196,24 @@ const HomePage = () => {
       const { data } = await axios.get(
         `https://dev.kimmand0o0.shop/api/products/characters/${charName}`
       );
-      if (data.products.length > 10) {
+      if (data.products.length >= 10) {
+        const newProduct = data.products.slice(0, 10);
+        setCharactorProducts(newProduct);
+        setTotalGoodsPage(3);
+        setMoveLength(370);
+      } else if (data.products.length >= 6) {
         const newProduct = data.products.slice(0, 6);
         setCharactorProducts(newProduct);
+        setTotalGoodsPage(2);
+        setMoveLength(200);
+      } else if (data.products.length === 5) {
+        setCharactorProducts(data.products);
+        setTotalGoodsPage(2);
+        setMoveLength(50);
       } else {
         setCharactorProducts(data.products);
+        setTotalGoodsPage(1);
+        setMoveLength(0);
       }
     })();
     setNowGoodsPage(1);
@@ -212,6 +223,24 @@ const HomePage = () => {
   useEffect(() => {
     selectCategory(1);
   }, []);
+  // ----------------------------------------------------------
+  const [newProducts, setNewProducts] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await axios.get(
+          `${process.env.REACT_APP_URL}/api/products/new`
+        );
+
+        const newProducts = data.products.slice(0, 8);
+        setNewProducts(newProducts);
+      } catch (err) {
+        console.log(err);
+      }
+    })();
+  }, []);
+  // ----------------------------------------------------------
 
   return (
     <main>
@@ -275,110 +304,23 @@ const HomePage = () => {
       <NewItemWrap>
         <div className="title">새로 나왔어요</div>
         <ul>
-          <li>
-            <div
-              className="listImg"
-              style={{
-                backgroundImage:
-                  "url(https://img1.kakaocdn.net/thumb/R142x142@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221220143210135_8809814929864_AW_00.jpg)",
-              }}
-            ></div>
-            <div className="goodsName">HBD폭죽카드_카카오프렌즈</div>
-            <div className="price">
-              <strong>7,900</strong>원
-            </div>
-          </li>
-          <li onClick={gotoProducts}>
-            <div
-              className="listImg"
-              style={{
-                backgroundImage:
-                  "url(https://img1.kakaocdn.net/thumb/R142x142@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221215150812192_8809814929796_AW_00.jpg)",
-              }}
-            ></div>
-            <div className="goodsName">드레스업인형_춘식이</div>
-            <div className="price">
-              <strong>19,000</strong>원
-            </div>
-          </li>
-          <li>
-            <div
-              className="listImg"
-              style={{
-                backgroundImage:
-                  "url(https://img1.kakaocdn.net/thumb/R142x142@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221221175116076_8809810212519_AW_00.jpg)",
-              }}
-            ></div>
-            <div className="goodsName">밀키 스텐 텀블러 춘식이</div>
-            <div className="price">
-              <strong>22,000</strong>원
-            </div>
-          </li>
-          <li>
-            <div
-              className="listImg"
-              style={{
-                backgroundImage:
-                  "url(https://img1.kakaocdn.net/thumb/R142x142@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221221175241014_8809810212502_AW_00.jpg)",
-              }}
-            ></div>
-            <div className="goodsName">밀키 스텐 텀블러 어피치</div>
-            <div className="price">
-              <strong>22,000</strong>원
-            </div>
-          </li>
-          <li>
-            <div
-              className="listImg"
-              style={{
-                backgroundImage:
-                  "url(https://img1.kakaocdn.net/thumb/R142x142@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221221175251014_8809810212496_AW_00.jpg)",
-              }}
-            ></div>
-            <div className="goodsName">밀키 스텐 텀블러 라이언</div>
-            <div className="price">
-              <strong>22,000</strong>원
-            </div>
-          </li>
-          <li>
-            <div
-              className="listImg"
-              style={{
-                backgroundImage:
-                  "url(https://img1.kakaocdn.net/thumb/R142x142@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20220926162315633_8809814921318_8809814921318_AW_00.jpg)",
-              }}
-            ></div>
-            <div className="goodsName">춘식이 팝콘메이커</div>
-            <div className="price">
-              <strong>39,000</strong>원
-            </div>
-          </li>
-          <li>
-            <div
-              className="listImg"
-              style={{
-                backgroundImage:
-                  "url(https://img1.kakaocdn.net/thumb/R142x142@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221221111200745_8809810212236_AW_00.jpg)",
-              }}
-            ></div>
-            <div className="goodsName">춘식이 허그 슬리퍼</div>
-            <div className="price">
-              <strong>29,000</strong>원
-            </div>
-          </li>
-          <li>
-            <div
-              className="listImg"
-              style={{
-                backgroundImage:
-                  "url(https://img1.kakaocdn.net/thumb/R142x142@2x.q82.fwebp/?fname=https%3A%2F%2Ft1.kakaocdn.net%2Ffriends%2Fprod%2Fproduct%2F20221221110117323_8809790654590_AW_00.jpg)",
-              }}
-            ></div>
-            <div className="goodsName">도어벨 라이언&춘식이</div>
-            <div className="price">
-              <strong>29,900</strong>원
-            </div>
-          </li>
+          {newProducts.map((list) => (
+            <li
+              key={list.productId}
+              onClick={() => gotoProducts(list.productId)}
+            >
+              <div
+                className="listImg"
+                style={{
+                  backgroundImage: `url(${list.imageUrl})`,
+                }}
+              ></div>
+              <div className="goodsName">{list.productName}</div>
+              <div className="price">
+                <strong>{priceToString(list.productPrice)}</strong>원
+              </div>
+            </li>
+          ))}
         </ul>
       </NewItemWrap>
       <ExhibitionWrap>
