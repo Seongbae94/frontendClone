@@ -28,10 +28,13 @@ function App() {
     dispatch(getRoutes(location));
   }, [location]);
 
+  const isLogin = useSelector((state) => state.user.login);
   const nowRoute = useSelector((state) => state.routes.route.pathname);
 
   useEffect(() => {
+    // 페이지 진입 시 맨 위로 스크롤
     window.scrollTo(0, 0);
+
     //"/"로 진입 시 "/home"으로 리다이렉트
     if (nowRoute === "/") {
       navigate("/home");
@@ -62,6 +65,15 @@ function App() {
       })();
     }
   }, [nowRoute]);
+
+  //마이페이지의 경우
+  useEffect(() => {
+    if (nowRoute && nowRoute.includes("/mypage")) {
+      if (!isLogin) {
+        navigate("/home");
+      }
+    }
+  }, [nowRoute, isLogin]);
 
   useEffect(() => {
     if (localStorage.getItem("refreshtoken")) {

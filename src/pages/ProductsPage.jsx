@@ -9,6 +9,7 @@ import MiddBaner from "../components/middleBaner/MiddleBaner";
 
 const ExplainDropdown = ({ title, children }) => {
   const [explainDisplay, setExplainDisplay] = useState(false);
+
   const ActiveExplain = () => {
     setExplainDisplay(!explainDisplay);
   };
@@ -34,7 +35,11 @@ const ProductsPage = () => {
 
   const [productData, setProductData] = useState({});
   const ModalToggle = () => {
-    setModalActive(!modalActive);
+    if (!localStorage.getItem("refreshtoken")) {
+      alert("로그인이 필요한 기능입니다.");
+    } else {
+      setModalActive(!modalActive);
+    }
   };
   const nowBuying = async (productId) => {
     await axios.post(
@@ -53,9 +58,6 @@ const ProductsPage = () => {
     fetchData();
     alert("구매 완료!");
     ModalToggle();
-  };
-  const addBasket = () => {
-    console.log("장바구니");
   };
 
   const fetchData = async () => {
@@ -169,6 +171,7 @@ const ProductsPage = () => {
           <BuyButton onClick={ModalToggle} position="fixed" left="50%">
             구매하기
           </BuyButton>
+
           <BuyModalWrap modalActive={modalActive}>
             <div className="bg" onClick={ModalToggle}></div>
             <div className="Modal">
@@ -201,7 +204,6 @@ const ProductsPage = () => {
               >
                 바로구매
               </BuyButton>
-              {/* <i onClick={addBasket}></i> */}
             </div>
           </BuyModalWrap>
         </>

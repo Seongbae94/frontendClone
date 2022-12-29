@@ -3,11 +3,15 @@ import styled from "styled-components";
 import BasketCard from "../components/sub/BasketCard";
 import { priceToString } from "../components/sub/utils/PriceToString";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Orderbasket = () => {
   const [carts, setCarts] = useState();
   const [totalPrice, setTotalPrice] = useState(0);
   const deliveryFee = 3000;
+
+  const navigate = useNavigate();
 
   const accesstoken = localStorage.getItem("accesstoken");
   const refreshtoken = localStorage.getItem("refreshtoken");
@@ -35,7 +39,10 @@ const Orderbasket = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    const token = localStorage.getItem("refreshtoken");
+    if (token) {
+      fetchData();
+    }
   }, []);
 
   const priceGroup = [];
@@ -78,27 +85,25 @@ const Orderbasket = () => {
         prev.productId === id ? { ...prev, toggle: !prev.toggle } : { ...prev }
       )
     );
-
-    // setCarts([
-    //   ...carts.slice(0, toggledCartIdx),
-    //   { ...carts[toggledCartIdx], toggle: !carts[toggledCartIdx].toggle },
-    //   ...carts.slice(toggledCartIdx + 1),
-    // ]);
   };
 
   const purchaseItems = async () => {
-    await axios.post(
-      "https://dev.kimmand0o0.shop/api/users/orderLists",
-      {},
-      {
-        headers: {
-          accesstoken: accesstoken,
-          refreshtoken: refreshtoken,
-        },
-      }
-    );
-    alert("구매가 완료되었습니다");
-    fetchData();
+    if (!localStorage.getItem("refreshtoken")) {
+      alert("로그인이 필요한 기능입니다.");
+    } else {
+      await axios.post(
+        "https://dev.kimmand0o0.shop/api/users/orderLists",
+        {},
+        {
+          headers: {
+            accesstoken: accesstoken,
+            refreshtoken: refreshtoken,
+          },
+        }
+      );
+      alert("구매가 완료되었습니다");
+      fetchData();
+    }
   };
 
   return (
@@ -263,7 +268,6 @@ const Orderbasket = () => {
           </p>
         </div>
       )}
-
       <BuyButton onClick={purchaseItems} position="fixed" left="50%">
         구매하기
       </BuyButton>
