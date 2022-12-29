@@ -70,7 +70,6 @@ const BestPage = () => {
     );
     setCartProducts(data.Carts);
   };
-  console.log(bestProducts, cartProducts);
 
   //베스트 페이지에서 productId 모음
   const productIdGroup = [];
@@ -84,8 +83,6 @@ const BestPage = () => {
       : null
   );
 
-  console.log(includeGroup);
-
   return (
     <StContainer>
       <StPopular>
@@ -94,36 +91,36 @@ const BestPage = () => {
       </StPopular>
       <StCards>
         {bestProducts.slice(0, 50).map((list) => (
-          <StCard
-            onClick={() => {
-              gotoDetail(list.productId);
-            }}
-            key={list.productId}
-            rank={bestProducts.indexOf(list) + 1}
-          >
-            <p className="rank">{bestProducts.indexOf(list) + 1}</p>
-            <StCardImage src={list.imageUrl} />
-            <StFlexStrech>
-              <p className="card-title" mr="5px">
-                {list.productName}
-              </p>
-              {includeGroup.includes(list.productId) ? (
-                <StBasketIcon
-                  bgPosition="-320px -220px"
-                  onClick={() => addBasket(list.productId)}
-                >
-                  장바구니 담기
-                </StBasketIcon>
-              ) : (
-                <StBasketIcon onClick={() => addBasket(list.productId)}>
-                  장바구니 담기
-                </StBasketIcon>
-              )}
-              {/* <StBasketIcon bgPosition="-320px -220px" onClick={addBasket}>장바구니 담기</StBasketIcon> */}
-            </StFlexStrech>
-            <ToastContainer />
-            <p className="price">{priceToString(list.productPrice)}원</p>
-          </StCard>
+          <CardWrap key={list.productId}>
+            <StCard
+              onClick={() => {
+                gotoDetail(list.productId);
+              }}
+              rank={bestProducts.indexOf(list) + 1}
+            >
+              <p className="rank">{bestProducts.indexOf(list) + 1}</p>
+              <StCardImage src={list.imageUrl} />
+              <StFlexStrech>
+                <p className="card-title" mr="5px">
+                  {list.productName}
+                </p>
+              </StFlexStrech>
+              <ToastContainer />
+              <p className="price">{priceToString(list.productPrice)}원</p>
+            </StCard>
+            {includeGroup.includes(list.productId) ? (
+              <StBasketIcon
+                bgPosition="-320px -220px"
+                onClick={() => addBasket(list.productId)}
+              >
+                장바구니 담기
+              </StBasketIcon>
+            ) : (
+              <StBasketIcon onClick={() => addBasket(list.productId)}>
+                장바구니 담기
+              </StBasketIcon>
+            )}
+          </CardWrap>
         ))}
       </StCards>
     </StContainer>
@@ -221,10 +218,14 @@ const StCard = styled.div`
     border-radius: 10px;
   }
 `;
+const CardWrap = styled.div`
+  position: relative;
+`;
 
 const StBasketIcon = styled.span`
   position: absolute;
   right: 0;
+  bottom: 50px;
   /* z-index: 1; */
   display: block;
   overflow: hidden;
