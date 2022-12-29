@@ -3,6 +3,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router";
+import { priceToString } from "./utils/PriceToString";
 
 const CharProductCard = ({ product, fetchCartData, includeGroup }) => {
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ const CharProductCard = ({ product, fetchCartData, includeGroup }) => {
         <div className="flex">
           <p className="title">{product.productName}</p>
         </div>
-        <p className="price">{product.productPrice}원</p>
+        <p className="price">{priceToString(product.productPrice)}원</p>
         <ToastContainer />
       </StProduct>
       {includeGroup.includes(product.productId) ? (
