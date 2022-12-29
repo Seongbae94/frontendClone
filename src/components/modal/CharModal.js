@@ -23,8 +23,14 @@ const OVERLAY_STYLE = {
   zIndex: 1000,
 };
 
-export default function Modal({ product, fetchData }) {
+export default function Modal({
+  product,
+  fetchData,
+  setTotalPrice,
+  totalPrice,
+}) {
   const [open, setOpen] = useState(false);
+  console.log(product);
 
   const accesstoken = localStorage.getItem("accesstoken");
   const refreshtoken = localStorage.getItem("refreshtoken");
@@ -41,6 +47,7 @@ export default function Modal({ product, fetchData }) {
         },
       }
     );
+    setTotalPrice(totalPrice - product.quantityPrice);
     fetchData();
   };
 

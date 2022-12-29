@@ -12,6 +12,7 @@ const BasketCard = ({
   setCount,
   carts,
   handlerToggleChild,
+  totalPrice,
 }) => {
   const [toggle, setToggle] = useState(product.toggle);
 
@@ -117,7 +118,12 @@ const BasketCard = ({
   return (
     <div key={product.productId}>
       <StCard>
-        <CharModal fetchData={fetchData} product={product}></CharModal>
+        <CharModal
+          fetchData={fetchData}
+          product={product}
+          totalPrice={totalPrice}
+          setTotalPrice={setTotalPrice}
+        ></CharModal>
         {toggle ? (
           <StCheckIcon
             onClick={() =>

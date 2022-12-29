@@ -182,6 +182,7 @@ const Orderbasket = () => {
                     setCount={setCount}
                     carts={carts}
                     handlerToggleChild={handlerToggleChild}
+                    totalPrice={totalPrice}
                   />
                 </div>
               );
