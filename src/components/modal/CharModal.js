@@ -28,15 +28,14 @@ export default function Modal({
   fetchData,
   setTotalPrice,
   totalPrice,
+  toggle,
 }) {
   const [open, setOpen] = useState(false);
-  console.log(product);
 
   const accesstoken = localStorage.getItem("accesstoken");
   const refreshtoken = localStorage.getItem("refreshtoken");
 
   const onClickConfirmHandler = async (productId) => {
-    console.log(productId);
     await axios.put(
       `https://dev.kimmand0o0.shop/api/users/carts/delete/${productId}`,
       {},
@@ -47,11 +46,13 @@ export default function Modal({
         },
       }
     );
-    setTotalPrice(totalPrice - product.quantityPrice);
+    if (toggle) {
+      setTotalPrice(totalPrice - product.quantityPrice);
+    } else {
+      setTotalPrice(totalPrice);
+    }
     fetchData();
   };
-
-  // useState(() => {}, []);
 
   if (!open) {
     return (
@@ -61,8 +62,6 @@ export default function Modal({
           right: "0",
         }}
         onClick={() => setOpen(true)}
-
-        // onClick={() => removeFromBasket()}
       ></StCloseIcon>
     );
   }
