@@ -175,6 +175,7 @@ const Orderbasket = () => {
               return (
                 <div key={product.productId}>
                   <BasketCard
+                    key={product.productId}
                     product={product}
                     fetchData={fetchData}
                     priceTotal={priceTotal}
@@ -183,6 +184,7 @@ const Orderbasket = () => {
                     carts={carts}
                     handlerToggleChild={handlerToggleChild}
                     totalPrice={totalPrice}
+                    setCarts={setCarts}
                   />
                 </div>
               );
