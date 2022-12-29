@@ -9,10 +9,10 @@ const BasketCard = ({
   product,
   priceTotal,
   setTotalPrice,
-  setCount,
   carts,
   handlerToggleChild,
   totalPrice,
+  setCarts,
 }) => {
   const [toggle, setToggle] = useState(product.toggle);
 
@@ -26,10 +26,6 @@ const BasketCard = ({
   useEffect(() => {
     setToggle(product.toggle);
   }, [product.toggle]);
-
-  useEffect(() => {
-    setCount(carts.length);
-  }, [carts.length]);
 
   const reduceAmount = async ({ productId, amount }) => {
     if (amount > 1) {
@@ -45,7 +41,39 @@ const BasketCard = ({
           },
         }
       );
-      fetchData();
+
+      const { data } = await axios.get(
+        "https://dev.kimmand0o0.shop/api/users/carts",
+        {
+          headers: {
+            accesstoken: accesstoken,
+            refreshtoken: refreshtoken,
+          },
+        }
+      );
+
+      const convertedCartsByCheck = data.Carts.products.map((item) => ({
+        ...item,
+        toggle: true,
+      }));
+
+      let cartLists = carts;
+
+      let cartss = cartLists.map((cart) =>
+        convertedCartsByCheck.map((newVal) => ({
+          ...newVal,
+          toggle: cart.toggle,
+        }))
+      );
+
+      let result = [];
+
+      for (let i = 0; i < cartss.length; i++) {
+        result.push(cartss[i][i]);
+      }
+
+      setCarts(result);
+      // fetchData();
     }
   };
 
@@ -63,7 +91,38 @@ const BasketCard = ({
           },
         }
       );
-      fetchData();
+      const { data } = await axios.get(
+        "https://dev.kimmand0o0.shop/api/users/carts",
+        {
+          headers: {
+            accesstoken: accesstoken,
+            refreshtoken: refreshtoken,
+          },
+        }
+      );
+
+      const convertedCartsByCheck = data.Carts.products.map((item) => ({
+        ...item,
+        toggle: true,
+      }));
+
+      let cartLists = carts;
+
+      let cartss = cartLists.map((cart) =>
+        convertedCartsByCheck.map((newVal) => ({
+          ...newVal,
+          toggle: cart.toggle,
+        }))
+      );
+
+      let result = [];
+
+      for (let i = 0; i < cartss.length; i++) {
+        result.push(cartss[i][i]);
+      }
+
+      setCarts(result);
+      // fetchData();
       setTotalPrice((prev) => prev - price / amount);
     }
   };
@@ -81,7 +140,38 @@ const BasketCard = ({
         },
       }
     );
-    fetchData();
+
+    const { data } = await axios.get(
+      "https://dev.kimmand0o0.shop/api/users/carts",
+      {
+        headers: {
+          accesstoken: accesstoken,
+          refreshtoken: refreshtoken,
+        },
+      }
+    );
+
+    const convertedCartsByCheck = data.Carts.products.map((item) => ({
+      ...item,
+      toggle: true,
+    }));
+
+    let cartLists = carts;
+
+    let cartss = cartLists.map((cart) =>
+      convertedCartsByCheck.map((newVal) => ({
+        ...newVal,
+        toggle: cart.toggle,
+      }))
+    );
+
+    let result = [];
+
+    for (let i = 0; i < cartss.length; i++) {
+      result.push(cartss[i][i]);
+    }
+
+    setCarts(result);
   };
 
   const increaseAmountWithPrice = async ({ productId, amount, price }) => {
@@ -97,7 +187,38 @@ const BasketCard = ({
         },
       }
     );
-    fetchData();
+    const { data } = await axios.get(
+      "https://dev.kimmand0o0.shop/api/users/carts",
+      {
+        headers: {
+          accesstoken: accesstoken,
+          refreshtoken: refreshtoken,
+        },
+      }
+    );
+
+    const convertedCartsByCheck = data.Carts.products.map((item) => ({
+      ...item,
+      toggle: true,
+    }));
+
+    let cartLists = carts;
+
+    let cartss = cartLists.map((cart) =>
+      convertedCartsByCheck.map((newVal) => ({
+        ...newVal,
+        toggle: cart.toggle,
+      }))
+    );
+
+    let result = [];
+
+    for (let i = 0; i < cartss.length; i++) {
+      result.push(cartss[i][i]);
+    }
+
+    setCarts(result);
+    // fetchData();
     setTotalPrice((prev) => prev + price / amount);
   };
 
@@ -105,14 +226,12 @@ const BasketCard = ({
     handlerToggleChild(productId);
     setToggle(product.toggle);
     setTotalPrice((prev) => prev - productPrice);
-    setCount((prev) => prev - 1);
   };
 
   const addPrice = (productPrice, productId) => {
     handlerToggleChild(productId);
     setToggle(product.toggle);
     setTotalPrice((prev) => prev + productPrice);
-    setCount((prev) => prev + 1);
   };
 
   return (
@@ -124,6 +243,8 @@ const BasketCard = ({
           totalPrice={totalPrice}
           setTotalPrice={setTotalPrice}
           toggle={toggle}
+          setCarts={setCarts}
+          carts={carts}
         ></CharModal>
         {toggle ? (
           <StCheckIcon
