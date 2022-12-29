@@ -3,6 +3,7 @@
     {
       "id": 1,
       "imageUrl": "https://t1.kakaocdn.net/friends/prod/character/character_20221226085036_458aa232e08847fcbaccbd176d019e62.png",
+      "bgImageUrl": "https://t1.kakaocdn.net/friends/prod/character/character_20221226085031_62325229e1954545be5c475653790077.png",
       "modalImageUrl": "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/assets/images/m960/img_intro_ryan.png",
       "nameKor": "라이언",
       "nameEng": "RYAN",
@@ -17,7 +18,8 @@
     },
     {
       "id": 2,
-      "imageUrl": "https://t1.kakaocdn.net/friends/new_store/prod/character/character_20221215004721_613a3097e04a4bf7848f6722b9a27577.jpg",
+      "imageUrl": "https://t1.kakaocdn.net/friends/prod/character/character_20221226085017_35a01c1b6cfd48e2b44ae2de7261b4ae.png",
+      "bgImageUrl": "https://t1.kakaocdn.net/friends/prod/character/character_20221226085014_095c7891a76c4ed19bb41d913c09806b.png",
       "modalImageUrl": "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/assets/images/m960/img_intro_apeach.png",
       "nameKor": "어피치",
       "nameEng": "APEACH",
@@ -30,7 +32,8 @@
     },
     {
       "id": 3,
-      "imageUrl": "https://t1.kakaocdn.net/friends/new_store/prod/character/character_20221215004747_96afef8c39db4b9599ff9cee7eabb080.jpg",
+      "imageUrl": "https://t1.kakaocdn.net/friends/prod/character/character_20221226084958_708ea4aac13e4672a48557a06f00f689.png",
+      "bgImageUrl": "https://t1.kakaocdn.net/friends/prod/character/character_20221226084954_246e8fb2c4ab40d795af26f4af5f1ed2.png",
       "modalImageUrl": "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/assets/images/m960/img_intro_muzicon.png",
       "nameKor": "무지",
       "nameEng": "MUZI & CON",
@@ -44,7 +47,8 @@
     },
     {
       "id": 4,
-      "imageUrl": "https://t1.kakaocdn.net/friends/new_store/prod/character/character_20221215004817_240323ba51ee4b2b872861d263da10ea.jpg",
+      "imageUrl": "https://t1.kakaocdn.net/friends/prod/character/character_20221226084941_0248a7ce264c496b9d241aff1126be86.png",
+      "bgImageUrl": "https://t1.kakaocdn.net/friends/prod/character/character_20221226084938_aa76410f5f694a9f9f93011a6438957c.png",
       "modalImageUrl": "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/assets/images/m960/img_intro_frodoneo.png",
       "nameKor": "프로도",
       "nameEng": "FRODO & NEO",
@@ -57,7 +61,8 @@
     },
     {
       "id": 5,
-      "imageUrl": "https://t1.kakaocdn.net/friends/new_store/prod/character/character_20221215004848_240a7554aff54a6bb7a66683cca790cd.jpg",
+      "imageUrl": "https://t1.kakaocdn.net/friends/prod/character/character_20221226084924_2aaab46f9af24cb496d3bd490a6c78a0.png",
+      "bgImageUrl": "https://t1.kakaocdn.net/friends/prod/character/character_20221226084920_97a5caa252644b3ba2b6639fcf785aad.png",
       "modalImageUrl": "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/assets/images/m960/img_intro_frodoneo.png",
       "nameKor": "네오",
       "nameEng": "FRODO & NEO",
@@ -70,7 +75,8 @@
     },
     {
       "id": 6,
-      "imageUrl": "https://t1.kakaocdn.net/friends/new_store/prod/character/character_20221215004915_0da12b8679bf4d7cafa91495550ee568.jpg",
+      "imageUrl": "https://t1.kakaocdn.net/friends/prod/character/character_20221226084907_b40f417a259e45cb87c4d1dc7eeccfb7.png",
+      "bgImageUrl": "https://t1.kakaocdn.net/friends/prod/character/character_20221226084904_0baf858658084a778cd14db66c015ad7.png",
       "modalImageUrl": "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/assets/images/m960/img_intro_tube.png",
       "nameKor": "튜브",
       "nameEng": "TUBE",
@@ -83,7 +89,8 @@
     },
     {
       "id": 7,
-      "imageUrl": "https://t1.kakaocdn.net/friends/new_store/prod/character/character_20221215005007_cc37441b25a44a0f974ba6b78b44b927.jpg",
+      "imageUrl": "https://t1.kakaocdn.net/friends/prod/character/character_20221226084849_49e9f466d6064899a4c2c333f329262e.png",
+      "bgImageUrl": "https://t1.kakaocdn.net/friends/prod/character/character_20221226084845_039285f8742c4fb88797c29b0813bb5e.png",
       "modalImageUrl": "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/assets/images/m960/img_intro_jayg.png",
       "nameKor": "제이지",
       "nameEng": "JAY - G",
@@ -95,7 +102,8 @@
     },
     {
       "id": 8,
-      "imageUrl": "https://t1.kakaocdn.net/friends/new_store/prod/character/character_20221215005042_67600d1de06545e7b683266c977c19bc.jpg",
+      "imageUrl": "https://t1.kakaocdn.net/friends/prod/character/character_20221226084831_454e7a25d02c4388ac3c794a43cdd33d.png",
+      "bgImageUrl": "https://t1.kakaocdn.net/friends/prod/character/character_20221226084827_70fbb2247a2d4feab28e90c46770c17c.png",
       "modalImageUrl": "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/assets/images/m960/img_intro_muzicon.png",
       "nameKor": "콘",
       "nameEng": "MUZI & CON",
@@ -109,7 +117,8 @@
     },
     {
       "id": 9,
-      "imageUrl": "https://t1.kakaocdn.net/friends/new_store/prod/character/character_20221215005113_0b7eff4e5705480d9fa0689d7edf07ad.jpg",
+      "imageUrl": "https://t1.kakaocdn.net/friends/prod/character/character_20221226084813_1b60d0faff294f4f99459dc7ef851ff0.png",
+      "bgImageUrl": "https://t1.kakaocdn.net/friends/prod/character/character_20221226084809_d8ec9dd06eac4ca1bc058a29e57c6e05.png",
       "modalImageUrl": "https://st.kakaocdn.net/commerce_ui/front-friendsshop/real/20221216/130751/assets/images/m960/img_intro_choonsik.png",
       "nameKor": "춘식이",
       "nameEng": "CHOONSIK",

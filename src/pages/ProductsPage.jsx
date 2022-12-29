@@ -30,6 +30,7 @@ const ProductsPage = () => {
   const [count, setCount] = useState(1);
 
   const [modalActive, setModalActive] = useState(false);
+  const [minusActive, setMinusActive] = useState("");
 
   const [productData, setProductData] = useState({});
   const ModalToggle = () => {
@@ -67,6 +68,14 @@ const ProductsPage = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (count > 1) {
+      setMinusActive("Active");
+    } else {
+      setMinusActive("");
+    }
+  }, [count]);
 
   return (
     <>
@@ -172,6 +181,7 @@ const ProductsPage = () => {
                   ></ControlBtn>
                   <ControlBtn
                     value="minus"
+                    set={minusActive}
                     onClick={() =>
                       count > 1 ? setCount(count - 1) : setCount(count)
                     }
@@ -182,7 +192,7 @@ const ProductsPage = () => {
               <div className="totalPriceWrap">
                 <div className="totalPriceMenu">총 제품금액</div>
                 <div className="totalPrice">
-                  {productData.productPrice * count}
+                  {priceToString(productData.productPrice * count)}원
                 </div>
               </div>
               <BuyButton

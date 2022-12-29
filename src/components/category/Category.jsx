@@ -1,7 +1,10 @@
+import { useState } from "react";
 import styled from "styled-components";
 import characters from "../sub/db/data.json";
 
 const CaractorCategory = ({ onClick, clickCategoryId }) => {
+  const [activeBg, setActiveBg] = useState(false);
+
   return (
     <CharectorCategory>
       <ul>
@@ -14,7 +17,11 @@ const CaractorCategory = ({ onClick, clickCategoryId }) => {
                 onClick(char.id);
               }}
             >
-              <img src={char.imageUrl} />
+              <img
+                src={
+                  char.id === clickCategoryId ? char.bgImageUrl : char.imageUrl
+                }
+              />
               <div className="listName">{char.nameKor}</div>
             </CategoryList>
           );
@@ -49,8 +56,8 @@ const CategoryList = styled.li`
     content: "";
     display: ${({ isActive }) => (isActive ? "block" : "none")};
     position: absolute;
-    left: -1px;
-    top: -1px;
+    left: -2px;
+    top: -2px;
     width: 57px;
     height: 57px;
     border: 1px solid #ff6644;
