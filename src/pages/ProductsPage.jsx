@@ -68,8 +68,6 @@ const ProductsPage = () => {
     fetchData();
   }, []);
 
-  console.log(productData);
-
   return (
     <>
       {productData ? (
@@ -193,7 +191,7 @@ const ProductsPage = () => {
               >
                 바로구매
               </BuyButton>
-              <i onClick={addBasket}></i>
+              {/* <i onClick={addBasket}></i> */}
             </div>
           </BuyModalWrap>
         </>
