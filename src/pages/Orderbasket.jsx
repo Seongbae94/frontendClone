@@ -4,6 +4,7 @@ import BasketCard from "../components/sub/BasketCard";
 import { priceToString } from "../components/sub/utils/PriceToString";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Orderbasket = () => {
   const [carts, setCarts] = useState();
@@ -87,18 +88,22 @@ const Orderbasket = () => {
   };
 
   const purchaseItems = async () => {
-    await axios.post(
-      "https://dev.kimmand0o0.shop/api/users/orderLists",
-      {},
-      {
-        headers: {
-          accesstoken: accesstoken,
-          refreshtoken: refreshtoken,
-        },
-      }
-    );
-    alert("구매가 완료되었습니다");
-    fetchData();
+    if (!localStorage.getItem("refreshtoken")) {
+      alert("로그인이 필요한 기능입니다.");
+    } else {
+      await axios.post(
+        "https://dev.kimmand0o0.shop/api/users/orderLists",
+        {},
+        {
+          headers: {
+            accesstoken: accesstoken,
+            refreshtoken: refreshtoken,
+          },
+        }
+      );
+      alert("구매가 완료되었습니다");
+      fetchData();
+    }
   };
 
   return (
@@ -261,11 +266,9 @@ const Orderbasket = () => {
           </p>
         </div>
       )}
-      {localStorage.getItem("refreshtoken") ? (
-        <BuyButton onClick={purchaseItems} position="fixed" left="50%">
-          구매하기
-        </BuyButton>
-      ) : null}
+      <BuyButton onClick={purchaseItems} position="fixed" left="50%">
+        구매하기
+      </BuyButton>
     </div>
   );
 };

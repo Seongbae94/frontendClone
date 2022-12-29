@@ -9,6 +9,7 @@ import MiddBaner from "../components/middleBaner/MiddleBaner";
 
 const ExplainDropdown = ({ title, children }) => {
   const [explainDisplay, setExplainDisplay] = useState(false);
+
   const ActiveExplain = () => {
     setExplainDisplay(!explainDisplay);
   };
@@ -34,30 +35,29 @@ const ProductsPage = () => {
 
   const [productData, setProductData] = useState({});
   const ModalToggle = () => {
-    setModalActive(!modalActive);
+    if (!localStorage.getItem("refreshtoken")) {
+      alert("로그인이 필요한 기능입니다.");
+    } else {
+      setModalActive(!modalActive);
+    }
   };
   const nowBuying = async (productId) => {
-    const getTokken = localStorage.getItem("refreshtoken");
-    if (!getTokken) {
-      alert("로그인 후 사용 가능합니다.");
-    } else {
-      await axios.post(
-        `${process.env.REACT_APP_URL}/api/users/directorderlists`,
-        {
-          productId: productId,
-          amount: count,
+    await axios.post(
+      `${process.env.REACT_APP_URL}/api/users/directorderlists`,
+      {
+        productId: productId,
+        amount: count,
+      },
+      {
+        headers: {
+          accesstoken: accesstoken,
+          refreshtoken: refreshtoken,
         },
-        {
-          headers: {
-            accesstoken: accesstoken,
-            refreshtoken: refreshtoken,
-          },
-        }
-      );
-      fetchData();
-      alert("구매 완료!");
-      ModalToggle();
-    }
+      }
+    );
+    fetchData();
+    alert("구매 완료!");
+    ModalToggle();
   };
 
   const fetchData = async () => {
@@ -171,6 +171,7 @@ const ProductsPage = () => {
           <BuyButton onClick={ModalToggle} position="fixed" left="50%">
             구매하기
           </BuyButton>
+
           <BuyModalWrap modalActive={modalActive}>
             <div className="bg" onClick={ModalToggle}></div>
             <div className="Modal">
