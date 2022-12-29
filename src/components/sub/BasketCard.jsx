@@ -123,6 +123,7 @@ const BasketCard = ({
           product={product}
           totalPrice={totalPrice}
           setTotalPrice={setTotalPrice}
+          toggle={toggle}
         ></CharModal>
         {toggle ? (
           <StCheckIcon
