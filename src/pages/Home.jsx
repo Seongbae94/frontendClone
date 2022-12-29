@@ -86,7 +86,7 @@ const HomePage = () => {
 
       setTimeout(() => {
         setBtnLoading(false);
-      }, slideAnimationTime + 300);
+      }, slideAnimationTime * 2);
     }
   };
 
@@ -108,7 +108,7 @@ const HomePage = () => {
 
       setTimeout(() => {
         setBtnLoading(false);
-      }, slideAnimationTime + 300);
+      }, slideAnimationTime * 2);
     }
   };
 
