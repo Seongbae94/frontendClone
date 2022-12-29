@@ -4,12 +4,15 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router";
 import { priceToString } from "./utils/PriceToString";
+import { useSelector } from "react-redux";
 
 const CharProductCard = ({ product, fetchCartData, includeGroup }) => {
   const navigate = useNavigate();
 
   const accesstoken = localStorage.getItem("accesstoken");
   const refreshtoken = localStorage.getItem("refreshtoken");
+
+  const isLogin = useSelector((state) => state.user.login);
 
   const notify = () => {
     toast.success("장바구니에 담겼습니다", {
@@ -25,21 +28,25 @@ const CharProductCard = ({ product, fetchCartData, includeGroup }) => {
   };
 
   const addToBasket = async (productId) => {
-    await axios.post(
-      `https://dev.kimmand0o0.shop/api/users/carts`,
-      {
-        productId: productId,
-        amount: 1,
-      },
-      {
-        headers: {
-          accesstoken: accesstoken,
-          refreshtoken: refreshtoken,
+    if (!isLogin) {
+      alert("로그인이 필요한 기능입니다.");
+    } else {
+      await axios.post(
+        `https://dev.kimmand0o0.shop/api/users/carts`,
+        {
+          productId: productId,
+          amount: 1,
         },
-      }
-    );
-    notify();
-    fetchCartData();
+        {
+          headers: {
+            accesstoken: accesstoken,
+            refreshtoken: refreshtoken,
+          },
+        }
+      );
+      notify();
+      fetchCartData();
+    }
   };
 
   const gotoDetail = (id) => {

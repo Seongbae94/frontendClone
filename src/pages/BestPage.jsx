@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import styled from "styled-components";
@@ -12,6 +13,8 @@ const BestPage = () => {
 
   const accesstoken = localStorage.getItem("accesstoken");
   const refreshtoken = localStorage.getItem("refreshtoken");
+
+  const isLogin = useSelector((state) => state.user.login);
 
   useEffect(() => {
     (async () => {
@@ -37,21 +40,25 @@ const BestPage = () => {
   };
 
   const addBasket = async (productId) => {
-    await axios.post(
-      `https://dev.kimmand0o0.shop/api/users/carts`,
-      {
-        productId: productId,
-        amount: 1,
-      },
-      {
-        headers: {
-          accesstoken: accesstoken,
-          refreshtoken: refreshtoken,
+    if (!isLogin) {
+      alert("로그인이 필요한 기능입니다.");
+    } else {
+      await axios.post(
+        `https://dev.kimmand0o0.shop/api/users/carts`,
+        {
+          productId: productId,
+          amount: 1,
         },
-      }
-    );
-    notify();
-    fetchCartData();
+        {
+          headers: {
+            accesstoken: accesstoken,
+            refreshtoken: refreshtoken,
+          },
+        }
+      );
+      notify();
+      fetchCartData();
+    }
   };
 
   const gotoDetail = (id) => {
