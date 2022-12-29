@@ -54,7 +54,6 @@ const Orderbasket = () => {
 
   const [toggle, setToggle] = useState(true);
 
-  // let filtered;
   useEffect(() => {
     const filtered = carts?.filter((cart) => cart.toggle === true);
     if (filtered?.length === carts?.length) {
